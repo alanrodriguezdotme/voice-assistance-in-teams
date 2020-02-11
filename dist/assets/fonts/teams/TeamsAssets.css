@@ -1,0 +1,56 @@
+@font-face {
+	font-family: 'TeamsAssets-Light';
+	src: url('./TeamsAssets-Light.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'TeamsAssets-Regular';
+	src: url('./TeamsAssets-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.icon-teams {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-family: 'TeamsAssets-Light';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	speak: none;
+}
+
+.icon-teams-regular {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-family: 'TeamsAssets-Regular';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	speak: none;
+}
+
+.icon-teams-Microphone:before { content: "\E106"; }
+.icon-teams-Search:before { content: "\E406"; }
+.icon-teams-Cancel:before { content: "\E8BB"; }
+.icon-teams-Back:before { content: "\F309"; }
+.icon-teams-VerticalDots:before { content: "\E325"; }
+.icon-teams-SpeakerMax:before { content: "\E400"; }
+.icon-teams-Video:before { content: "\E102"; }
+.icon-teams-Phone:before { content: "\E705"; }
+.icon-teams-Smiley:before { content: "\F303"; }
+.icon-teams-Send:before { content: "\E323"; }
+.icon-teams-Menu:before { content: "\E41A"; }
+.icon-teams-Filter:before { content: "\E914"; }
+.icon-teams-Mention:before { content: "\E902"; }
+.icon-teams-Reply:before { content: "\E30E"; }
+.icon-teams-Like:before { content: "\E912"; }
+.icon-teams-Bell:before { content: "\E625"; }
+.icon-teams-Chat:before { content: "\E340"; }
+.icon-teams-Teams:before { content: "\E20B"; }
+.icon-teams-Calendar:before { content: "\F200"; }
+.icon-teams-More:before { content: "\E94F"; }

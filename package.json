@@ -1,0 +1,35 @@
+{
+  "name": "cortana-convergence",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alan Rodriguez",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.9.0",
+    "microsoft-speech-browser-sdk": "0.0.12",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "socket.io-client": "^2.2.0",
+    "speak-tts": "^2.0.8",
+    "styled-components": "^4.3.2",
+    "underscore": "^1.9.2",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "react-hot-loader": "^4.12.7",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
+  }
+}
