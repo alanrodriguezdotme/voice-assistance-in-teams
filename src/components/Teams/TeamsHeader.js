@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import UserPhoto from '../UserPhoto'
 
+import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
+import { LuisContext } from '../../contexts/LuisContext'
+
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
+  const { handleMicClick, recognizerStop } = useContext(SpeechToTextContext)
+  const { getLuisResponse } = useContext(LuisContext)
+
+  const handleMicrophoneClick = () => {
+    handleMicClick(getLuisResponse)
+  }
 
   return (
     <Container>
@@ -26,7 +35,7 @@ const TeamsHeader = () => {
           placeholder="Search"
           value={ searchValue }
           onChange={ (event) => setSearchValue(event.target.value) } />
-        <SearchButton>
+        <SearchButton onClick={ () => handleMicrophoneClick() }>
           <i className="icon-teams icon-teams-Microphone" />
         </SearchButton>
       </Search>

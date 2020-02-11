@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { format, subMinutes, formatDistanceToNow } from 'date-fns'
+import { format, subMinutes, formatDistanceToNow, isToday, isThisWeek, isThisYear } from 'date-fns'
 
 import TeamsFeedData from '../../contexts/TeamsFeedData' 
 import UserPhoto from '../UserPhoto'
@@ -8,9 +8,13 @@ import UserPhoto from '../UserPhoto'
 const TeamsFeed = () => {
   function renderTimestamp(timeOffset) {
     let time = subMinutes(new Date(), timeOffset)
-    console.log(time)
-    console.log(format(time))
-    return formatDistanceToNow(time)
+    if (isToday(time)) {
+      return format(time, 'h:mm b')
+    } else if (isThisWeek(time)) {
+      return format(time, 'EEEE')
+    } else if (isThisYear(time)) {
+      return format(time, 'M/d')
+    }
   }
 
   const renderFeed = () => {
@@ -33,7 +37,7 @@ const TeamsFeed = () => {
                 { item.firstName + ' ' + item.title }
               </Title>
               <Timestamp>
-                {/* { item.timeOffset && renderTimestamp(item.timeOffset) } */}
+                { item.timeOffset && renderTimestamp(item.timeOffset) }
               </Timestamp>
             </TitleLine>
             <SubtitleLine>
@@ -103,7 +107,9 @@ const Title = styled.div`
 `
 
 const Timestamp = styled.div`
-
+  font-size: 12px;
+  color: #605e5c;
+  padding-right: 16px;
 `
 
 const SubtitleLine = styled.div`

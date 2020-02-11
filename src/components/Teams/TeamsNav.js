@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 
 const TeamsNav = () => {
+
   return (
     <Container>
-      <NavItem>
-        <i className="icon-teams icon-teams-Bell" />
+      <NavItem selected={true}>
+        <i className="icon-teams-regular icon-teams-Bell" />
         <div className="title">Activity</div>
       </NavItem>
       <NavItem>
@@ -48,7 +49,8 @@ const NavItem = styled.div`
   flex-direction: column;
   color: ${ p => p.selected ? "#6264a7" : "#605e5c" };
 
-  .icon-teams { 
+  .icon-teams,
+  .icon-teams-regular { 
     font-size: 24px;
     display: flex;
     justify-content: center;
