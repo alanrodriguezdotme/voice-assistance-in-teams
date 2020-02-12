@@ -10,7 +10,7 @@ let recognizer
 export const SpeechToTextContext = createContext()
 
 const SpeechToTextContextProvider = (props) => {
-	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance } = useContext(GlobalContext)
+	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance, setShowCortanaPanel } = useContext(GlobalContext)
 
 	const initStt = () => {
 		recognizer = recognizerSetup(
@@ -92,11 +92,9 @@ const SpeechToTextContextProvider = (props) => {
 					if (event.Result.NBest) {
 						console.log(event.Result.NBest[0].ITN)
 						actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
-					}  else {
-						// if (Store.isMintanaModeActive) {
-						// 	//completely reset the demo
-							setAvatarState('calm')
-						// }
+					} else {
+						setAvatarState('calm')
+						setShowCortanaPanel(false)
 					}
 					setUtterance(null)
 					break
@@ -109,13 +107,13 @@ const SpeechToTextContextProvider = (props) => {
 					break
 			}
 		})
-			.On(() => {
-				// The request succeeded. Nothing to do here.
-			},
-			(error) => {
-				error && console.error('STT error', error)
-				// this.init()
-			})
+		.On(() => {
+			// The request succeeded. Nothing to do here.
+		},
+		(error) => {
+			error && console.error('STT error', error)
+			// this.init()
+		})
 	}
 
 	const recognizerStop = () => {
@@ -125,6 +123,7 @@ const SpeechToTextContextProvider = (props) => {
 			initStt()
 		}
 		setAvatarState('calm')
+		setShowCortanaPanel(false)
 	}
 
 	return (

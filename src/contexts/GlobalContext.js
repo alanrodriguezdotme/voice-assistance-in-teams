@@ -8,6 +8,7 @@ const GlobalContextProvider = (props) => {
 	let [ showMic, setShowMic ] = useState(true)
 	let [ showUtterance, setShowUtterance ] = useState(false)
 	let [ utterance, setUtterance ] = useState(null)
+	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
 	let [ luisResponse, setLuisResponse ] = useState(null)
 	let [ cortanaText, setCortanaText ] = useState(null)
 
@@ -18,9 +19,9 @@ const GlobalContextProvider = (props) => {
 			showMic, setShowMic,
 			showUtterance, setShowUtterance,
 			utterance, setUtterance,
+			showCortanaPanel, setShowCortanaPanel,
 			luisResponse, setLuisResponse,
-			cortanaText, setCortanaText,
-
+			cortanaText, setCortanaText
 		}}>
 			{props.children}
 		</GlobalContext.Provider>

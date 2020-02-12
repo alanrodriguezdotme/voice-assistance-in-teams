@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const UserPhoto = ({ size, photo, firstName, lastName }) => {
@@ -10,6 +10,11 @@ const UserPhoto = ({ size, photo, firstName, lastName }) => {
     "4C4A48",
     "8764B8"
   ]
+  let [ selectedColor, setSelectedColor ] = useState(null)
+
+  useEffect(() => {
+    setSelectedColor(colors[Math.floor(Math.random() * colors.length)])
+  }, [])
 
   const renderInitials = () => {
     let initials = firstName[0] + lastName[0]
@@ -23,7 +28,7 @@ const UserPhoto = ({ size, photo, firstName, lastName }) => {
   return (
     <Container
       className="userPhoto"
-      backgroundColor={ colors[Math.floor(Math.random() * colors.length)] }
+      backgroundColor={ selectedColor ? selectedColor: 'transparent' }
       size={ size }
       photo={ photo }>
       { !photo && renderInitials() }

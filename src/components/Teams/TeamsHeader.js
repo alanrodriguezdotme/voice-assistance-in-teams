@@ -4,14 +4,17 @@ import UserPhoto from '../UserPhoto'
 
 import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 import { LuisContext } from '../../contexts/LuisContext'
+import { GlobalContext } from '../../contexts/GlobalContext'
 
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
+  const { setShowCortanaPanel } = useContext(GlobalContext)
   const { handleMicClick, recognizerStop } = useContext(SpeechToTextContext)
   const { getLuisResponse } = useContext(LuisContext)
 
   const handleMicrophoneClick = () => {
     handleMicClick(getLuisResponse)
+    setShowCortanaPanel(true)
   }
 
   return (

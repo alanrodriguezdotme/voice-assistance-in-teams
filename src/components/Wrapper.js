@@ -24,7 +24,7 @@ export default Wrapper;
 const Container = styled.div`
 	height: 100vh;
 	width: 100vw;
-	background: #333;
+	background: #212121;
 	display: flex;
 	align-items: center;
 	justify-content: center;
