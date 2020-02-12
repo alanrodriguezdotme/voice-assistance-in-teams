@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react'
+import React, { useState, createContext, useEffect } from 'react'
 
 import TeamsChatData from './TeamsChatData'
 
@@ -16,6 +16,7 @@ const GlobalContextProvider = (props) => {
 	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
 	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
 	let [ chatData, setChatData ] = useState(null)
+	let [ orientation, setOrientation ] = useState(null)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -24,6 +25,62 @@ const GlobalContextProvider = (props) => {
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
 	}
+
+	function getMobileOperatingSystem() {
+		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+	
+			if (/android/i.test(userAgent)) {
+					return "Android";
+			}
+	
+			// iOS detection from: http://stackoverflow.com/a/9039885/177710
+			if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+					return "iOS";
+			}
+	
+			return "unknown";
+	}
+
+	async function requestSensorPermission() {
+		if (DeviceOrientationEvent && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+			const permissionState = await DeviceOrientationEvent.requestPermission();
+	
+			if (permissionState === "granted") {
+				// Permission granted   
+				initSensor()
+					
+			} else {
+				// Permission denied
+			}
+		}
+	}
+
+	function initSensor() {
+		window.addEventListener('deviceorientation', function(eventData) {
+			let { gamma, beta, alpha } = eventData
+			setOrientation({ gamma, beta, alpha })			
+			// // gamma is the left-to-right tilt in degrees
+			// console.log({ gamma });
+
+			// // beta is the front-to-back tilt in degrees
+			// console.log({ beta });
+
+			// // alpha is the compass direction the device is facing in degrees
+			// console.log({ alpha });
+		}, false);
+	}
+
+	useEffect(() => {
+		if (window.DeviceOrientationEvent) {
+			if (getMobileOperatingSystem() == 'iOS') {
+				requestSensorPermission()
+			} else {
+				initSensor()
+			}
+		} else {
+			console.error('Cannot find window.DeviceOrientationEvent')
+		}
+	}, [])
 
 	return (
 		<GlobalContext.Provider value={{
@@ -38,7 +95,8 @@ const GlobalContextProvider = (props) => {
 			showTeamsChat, setShowTeamsChat,
 			chatMessages, setChatMessages,
 			chatData, setChatData,
-			resetCortana
+			resetCortana,
+			orientation
 		}}>
 			{props.children}
 		</GlobalContext.Provider>

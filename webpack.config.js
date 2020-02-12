@@ -8,11 +8,19 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader']
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        loader: ["react-hot-loader/webpack", "ts-loader"]
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       }
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.ts', '.js', '.jsx']
   },
   output: {
     path: __dirname + '/dist',

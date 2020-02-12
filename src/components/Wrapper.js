@@ -7,14 +7,19 @@ import Home from './Home'
 
 const Wrapper = () => {
 	let { initStt } = useContext(SpeechToTextContext)
+	let { orientation } = useContext(GlobalContext)
 	
 	useEffect(() => {
 		initStt()
 	}, [])
 
+	useEffect(() => {
+		console.log(orientation)
+	}, [orientation])
+
 	return (
 		<Container>
-			<Home />
+			<Home orientation={ orientation } />
 		</Container>
 	);
 }
