@@ -1,5 +1,7 @@
 import React, { useState, createContext } from 'react'
 
+import TeamsChatData from './TeamsChatData'
+
 export const GlobalContext = createContext()
 
 const GlobalContextProvider = (props) => {
@@ -11,6 +13,17 @@ const GlobalContextProvider = (props) => {
 	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
 	let [ luisResponse, setLuisResponse ] = useState(null)
 	let [ cortanaText, setCortanaText ] = useState(null)
+	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
+	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
+	let [ chatData, setChatData ] = useState(null)
+
+	const resetCortana = () => {
+		setSttState(null)
+		setUtterance(null)
+		setAvatarState('calm')
+		setLuisResponse(null)
+		setShowCortanaPanel(false)
+	}
 
 	return (
 		<GlobalContext.Provider value={{
@@ -21,7 +34,11 @@ const GlobalContextProvider = (props) => {
 			utterance, setUtterance,
 			showCortanaPanel, setShowCortanaPanel,
 			luisResponse, setLuisResponse,
-			cortanaText, setCortanaText
+			cortanaText, setCortanaText,
+			showTeamsChat, setShowTeamsChat,
+			chatMessages, setChatMessages,
+			chatData, setChatData,
+			resetCortana
 		}}>
 			{props.children}
 		</GlobalContext.Provider>

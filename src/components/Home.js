@@ -1,11 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import TeamsHome from './Teams/TeamsHome'
 import CortanaPanel from './Cortana/CortanaPanel'
+import { GlobalContext } from '../contexts/GlobalContext'
+import TeamsChat from './Teams/TeamsChat/TeamsChat'
 
 const Home = () => {
+  let { showTeamsChat, chatData } = useContext(GlobalContext)
+
   return (
     <Container>
+      { showTeamsChat && 
+        <TeamsChat chatData={ chatData } />}
       <CortanaPanel />
       <TeamsHome />
     </Container>

@@ -13,7 +13,7 @@ const TeamsHeader = () => {
   const { getLuisResponse } = useContext(LuisContext)
 
   const handleMicrophoneClick = () => {
-    handleMicClick(getLuisResponse)
+    handleMicClick({ getLuisResponse })
     setShowCortanaPanel(true)
   }
 

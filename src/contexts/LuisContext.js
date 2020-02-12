@@ -1,5 +1,6 @@
 import React, { useContext, createContext, useEffect } from 'react'
 import Speech from 'speak-tts'
+import * as _ from 'underscore'
 
 import { GlobalContext } from '../contexts/GlobalContext'
 import { SpeechToTextContext } from './SpeechToTextContext'
@@ -9,7 +10,7 @@ export const LuisContext = createContext()
 const speech = new Speech()
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
 
 	const resetLuis = () => {        
@@ -76,22 +77,44 @@ const LuisContextProvider = (props) => {
 				})
 				.then((data) => {
 					setLuisResponse(data)
-					let intent = data.intents[0].intent
-					let confidenceScore = data.intents[0].confidenceScore
+					let { intent, score } = data.intents[0]
+					let { entities } = data
 					
 					if (intent) {
 						console.log('intent: ', intent)
+						console.log(data)
+						let personName = null
+						let message = null
+						let newChatData = null
+
+						if (entities.length > 0) {
+							let personNameObject = _.findWhere(entities, { 
+								type: 'builtin.personName' 
+							})
+							let messageObject = _.findWhere(entities, { 
+								type: 'message' 
+							})
+
+							personName = personNameObject && personNameObject.entity
+							message = messageObject && messageObject.entity
+
+							newChatData = {
+								...getName(personName),
+								message
+							}
+						}
+
 						//check and see if we confidently know the intent, otherwise it is freeform text.
-						if (confidenceScore > .6) {
+						if (score > .6) {
 							switch(intent) {
 								case 'callPerson':
 									console.log('intent: callPerson')
-									
 									break
 								
 								case 'triggerMessageSkill':	
-									console.log('intent: triggerMessageSkill')
-
+									setChatData(newChatData)
+									resetCortana()
+									setShowTeamsChat(true)
 									break
 
 								default:

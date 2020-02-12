@@ -108,11 +108,14 @@ const SpeechToTextContextProvider = (props) => {
 			}
 		})
 		.On(() => {
-			// The request succeeded. Nothing to do here.
+			setSttState(null)
+			setUtterance(null)
 		},
 		(error) => {
 			error && console.error('STT error', error)
-			// this.init()
+			initStt()
+			setSttState(null)
+			setUtterance(null)
 		})
 	}
 
@@ -123,7 +126,9 @@ const SpeechToTextContextProvider = (props) => {
 			initStt()
 		}
 		setAvatarState('calm')
+		setSttState(null)
 		setShowCortanaPanel(false)
+		setUtterance(null)
 	}
 
 	return (

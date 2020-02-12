@@ -3,9 +3,11 @@ import styled from 'styled-components'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 import VoiceMeter from './VoiceMeter'
+import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 
 const CortanaPanel = () => {
-  let { showCortanaPanel, setShowCortanaPanel, utterance, sttState } = useContext(GlobalContext)
+  let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana } = useContext(GlobalContext)
+  let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
 
@@ -24,16 +26,29 @@ const CortanaPanel = () => {
     }
   }, [showCortanaPanel])
 
+  function renderCortanaText () {
+    if (!luisResponse) {
+      return "How can I help you?"
+    } else {
+      return "I'm on it..."
+    }
+  }
+
+  function handleOverlayClick() {
+    recognizerStop()
+    resetCortana()
+  }
+
   return (
     <Container className={ showOverlay ? 'showOverlay' : '' }>
       <Overlay className={ showOverlay ? 'showOverlay' : '' }
-        onClick={ () => setShowCortanaPanel(false) } />
+        onClick={ () => handleOverlayClick() } />
       <Panel className={ showPanel ? 'showPanel' : '' }>
         <div className="tab"></div>
         <Main>
           { !utterance ?
             <CortanaText>
-              How can I help you?
+              { renderCortanaText() }
             </CortanaText> 
             : 
             <Utterance>
@@ -41,7 +56,9 @@ const CortanaPanel = () => {
             </Utterance>}
         </Main>
         <Controls>
-          <VoiceMeter sttState={ sttState } color="#6B6BA0" />
+          { sttState != null &&
+            <VoiceMeter sttState={ sttState } color="#6B6BA0" />
+          }
         </Controls>
       </Panel>
     </Container>
