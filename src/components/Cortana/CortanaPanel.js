@@ -1,15 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import SpeechRecognition from 'react-speech-recognition'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 import VoiceMeter from './VoiceMeter'
 import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
+// import { BrowserSTTContext } from '../../contexts/BrowserSTTContext'
 
-const CortanaPanel = () => {
+const options = {
+  autoStart: false,
+  continuous: false
+}
+
+const CortanaPanel = ({
+  resetTranscript,
+  startListening,
+  stopListening,
+  listening,
+  interimTranscript,
+  finalTranscript,
+  browserSupportsSpeechRecognition }) => {
   let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
+  // const { sttStop } = useContext(BrowserSTTContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
+
+  useEffect(() => {
+    console.log({
+      interimTranscript,
+      finalTranscript,
+      listening
+    })
+  }, [listening])
 
   // handle timing of transitions
   useEffect(() => {
@@ -17,6 +40,7 @@ const CortanaPanel = () => {
       setShowOverlay(true)
       setTimeout(() => {
         setShowPanel(true)
+        startListening()
       }, 350)
     } else {
       setShowPanel(false)
@@ -35,7 +59,9 @@ const CortanaPanel = () => {
   }
 
   function handleOverlayClick() {
-    recognizerStop()
+    // recognizerStop()
+    // sttStop()
+    stopListening()
     resetCortana()
   }
 
@@ -46,13 +72,13 @@ const CortanaPanel = () => {
       <Panel className={ showPanel ? 'showPanel' : '' }>
         <div className="tab"></div>
         <Main>
-          { !utterance ?
+          { interimTranscript.length == 0 ?
             <CortanaText>
               { renderCortanaText() }
             </CortanaText> 
             : 
             <Utterance>
-              { utterance }
+              { interimTranscript }
             </Utterance>}
         </Main>
         <Controls>
@@ -65,7 +91,7 @@ const CortanaPanel = () => {
   )
 }
 
-export default CortanaPanel
+export default SpeechRecognition(options)(CortanaPanel)
 
 const Container = styled.div`
   position: absolute;

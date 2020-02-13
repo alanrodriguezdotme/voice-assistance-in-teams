@@ -41,21 +41,7 @@ const GlobalContextProvider = (props) => {
 			return "unknown";
 	}
 
-	async function requestSensorPermission() {
-		if (DeviceOrientationEvent && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-			const permissionState = await DeviceOrientationEvent.requestPermission();
-	
-			if (permissionState === "granted") {
-				// Permission granted   
-				initSensor()
-					
-			} else {
-				// Permission denied
-			}
-		}
-	}
-
-	function initSensor() {
+	const initSensor = () => {
 		window.addEventListener('deviceorientation', function(eventData) {
 			let { gamma, beta, alpha } = eventData
 			setOrientation({ gamma, beta, alpha })			
@@ -72,9 +58,7 @@ const GlobalContextProvider = (props) => {
 
 	useEffect(() => {
 		if (window.DeviceOrientationEvent) {
-			if (getMobileOperatingSystem() == 'iOS') {
-				requestSensorPermission()
-			} else {
+			if (getMobileOperatingSystem() != 'iOS') {
 				initSensor()
 			}
 		} else {
@@ -96,7 +80,8 @@ const GlobalContextProvider = (props) => {
 			chatMessages, setChatMessages,
 			chatData, setChatData,
 			resetCortana,
-			orientation
+			orientation,
+			initSensor
 		}}>
 			{props.children}
 		</GlobalContext.Provider>
