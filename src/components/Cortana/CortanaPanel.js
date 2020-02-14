@@ -26,13 +26,13 @@ const CortanaPanel = ({
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
 
-  useEffect(() => {
-    console.log({
-      interimTranscript,
-      finalTranscript,
-      listening
-    })
-  }, [listening])
+  // useEffect(() => {
+  //   console.log({
+  //     interimTranscript,
+  //     finalTranscript,
+  //     listening
+  //   })
+  // }, [listening])
 
   // handle timing of transitions
   useEffect(() => {
@@ -40,7 +40,7 @@ const CortanaPanel = ({
       setShowOverlay(true)
       setTimeout(() => {
         setShowPanel(true)
-        startListening()
+        // startListening()
       }, 350)
     } else {
       setShowPanel(false)
@@ -59,9 +59,9 @@ const CortanaPanel = ({
   }
 
   function handleOverlayClick() {
-    // recognizerStop()
+    recognizerStop()
     // sttStop()
-    stopListening()
+    // stopListening()
     resetCortana()
   }
 
@@ -78,7 +78,7 @@ const CortanaPanel = ({
             </CortanaText> 
             : 
             <Utterance>
-              { interimTranscript }
+              { utterance }
             </Utterance>}
         </Main>
         <Controls>

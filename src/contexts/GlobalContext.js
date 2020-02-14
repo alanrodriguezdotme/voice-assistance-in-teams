@@ -17,6 +17,7 @@ const GlobalContextProvider = (props) => {
 	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
 	let [ chatData, setChatData ] = useState(null)
 	let [ orientation, setOrientation ] = useState(null)
+	let [ showSettings, setShowSettings ] = useState(false)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -79,6 +80,7 @@ const GlobalContextProvider = (props) => {
 			showTeamsChat, setShowTeamsChat,
 			chatMessages, setChatMessages,
 			chatData, setChatData,
+			showSettings, setShowSettings,
 			resetCortana,
 			orientation,
 			initSensor

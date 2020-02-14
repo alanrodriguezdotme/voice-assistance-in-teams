@@ -5,10 +5,10 @@ import TeamsHome from './Teams/TeamsHome'
 import CortanaPanel from './Cortana/CortanaPanel'
 import { GlobalContext } from '../contexts/GlobalContext'
 import TeamsChat from './Teams/TeamsChat/TeamsChat'
+import Settings from './Settings/Settings'
 
-const Home = ({ orientation, os }) => {
-  let { showTeamsChat, chatData, initSensor } = useContext(GlobalContext)
-  let [ showOrientation, setShowOrientation ] = useState(true)
+const Home = ({ os }) => {
+  let { showTeamsChat, chatData, initSensor, showSettings } = useContext(GlobalContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
   function getMedia(constraints) {
@@ -65,17 +65,11 @@ const Home = ({ orientation, os }) => {
         showPermission &&
           renderPermission()
       }
+      <Settings showSettings={ showSettings } />
       { showTeamsChat && 
         <TeamsChat chatData={ chatData } />}
       <CortanaPanel />
       <TeamsHome />
-      { orientation && showOrientation && 
-        <Orientation onClick={() => setShowOrientation(false)}>
-          gamma: { orientation.gamma }<br />
-          beta: { orientation.beta }<br />
-          alpha: { orientation.alpha }
-        </Orientation>
-      }
     </Container>
   )
 }
@@ -106,7 +100,7 @@ const Permission = styled.div`
   position: absolute;
   z-index: 9500;
   background: rgba(0, 0, 0, 0.9);
-  color: white
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;

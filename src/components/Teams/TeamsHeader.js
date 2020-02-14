@@ -9,15 +9,20 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
-  const { setShowCortanaPanel } = useContext(GlobalContext)
+  const { setShowCortanaPanel, setShowSettings } = useContext(GlobalContext)
   const { handleMicClick, recognizerStop } = useContext(SpeechToTextContext)
   // const { sttStart } = useContext(BrowserSTTContext)
   const { getLuisResponse } = useContext(LuisContext)
 
   const handleMicrophoneClick = () => {
-    // handleMicClick({ getLuisResponse })
+    handleMicClick({ getLuisResponse })
     // sttStart()
     setShowCortanaPanel(true)
+  }
+
+  function handleFilterClick() {
+    setShowSettings(true)
+    console.log('click')
   }
 
   return (
@@ -29,7 +34,8 @@ const TeamsHeader = () => {
           firstName="Kat"
           lastName="Larsson" />
         <Title>Feed</Title>
-        <TopButton>
+        <TopButton 
+          onClick={ () => handleFilterClick() }>
           <i className="icon-teams icon-teams-Filter" />
         </TopButton>
       </Top>

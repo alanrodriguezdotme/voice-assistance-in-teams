@@ -11,9 +11,9 @@ const App = () => {
 		<GlobalContextProvider>
 			<SpeechToTextContextProvider>
 				{/* <BrowserSTTContextProvider> */}
-					<LuisContextProvider>
-						<Wrapper />
-					</LuisContextProvider>
+				<LuisContextProvider>
+					<Wrapper />
+				</LuisContextProvider>
 				{/* </BrowserSTTContextProvider> */}
 			</SpeechToTextContextProvider>
 		</GlobalContextProvider>
