@@ -10,7 +10,7 @@ export const LuisContext = createContext()
 const speech = new Speech()
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, fullAttentionMode } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
 
 	const resetLuis = () => {        
@@ -111,11 +111,16 @@ const LuisContextProvider = (props) => {
 									console.log('intent: callPerson')
 									break
 								
-								case 'triggerMessageSkill':	
+								case 'triggerMessageSkill':
 									setChatData(newChatData)
-									resetCortana()
-									setShowTeamsChat(true)
-									break
+
+									if (fullAttentionMode) {
+										resetCortana()
+										setShowTeamsChat(true)
+										break
+									} else {
+										
+									}
 
 								default:
 									console.log('no actions found for this intent: ' + intent)

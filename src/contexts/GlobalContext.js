@@ -18,6 +18,7 @@ const GlobalContextProvider = (props) => {
 	let [ chatData, setChatData ] = useState(null)
 	let [ orientation, setOrientation ] = useState(null)
 	let [ showSettings, setShowSettings ] = useState(false)
+	let [ fullAttentionMode, setFullAttentionMode ] = useState(true)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -44,16 +45,18 @@ const GlobalContextProvider = (props) => {
 
 	const initSensor = () => {
 		window.addEventListener('deviceorientation', function(eventData) {
+			// gamma is the left-to-right tilt in degrees
+			// beta is the front-to-back tilt in degrees
+			// alpha is the compass direction the device is facing in degrees
 			let { gamma, beta, alpha } = eventData
-			setOrientation({ gamma, beta, alpha })			
-			// // gamma is the left-to-right tilt in degrees
-			// console.log({ gamma });
+			
+			setOrientation({ gamma, beta, alpha })
 
-			// // beta is the front-to-back tilt in degrees
-			// console.log({ beta });
-
-			// // alpha is the compass direction the device is facing in degrees
-			// console.log({ alpha });
+			if (beta > 20) {
+				setFullAttentionMode(true)
+			} else { 
+				setFullAttentionMode(false) 
+			}
 		}, false);
 	}
 
@@ -81,6 +84,7 @@ const GlobalContextProvider = (props) => {
 			chatMessages, setChatMessages,
 			chatData, setChatData,
 			showSettings, setShowSettings,
+			fullAttentionMode, setFullAttentionMode,
 			resetCortana,
 			orientation,
 			initSensor

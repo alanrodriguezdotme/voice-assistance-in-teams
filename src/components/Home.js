@@ -8,7 +8,7 @@ import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
 
 const Home = ({ os }) => {
-  let { showTeamsChat, chatData, initSensor, showSettings } = useContext(GlobalContext)
+  let { showTeamsChat, chatData, initSensor, showSettings, fullAttentionMode } = useContext(GlobalContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
   function getMedia(constraints) {

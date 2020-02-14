@@ -4,11 +4,13 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
   let { setShowSettings, orientation } = useContext(GlobalContext)
+  let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
 
   useEffect(() => {
     if (showSettings) {
+      setShowContainer(true)
       setShowOverlay(true)
       setTimeout(() => {
         setShowPanel(true)
@@ -17,15 +19,18 @@ const Settings = ({ showSettings }) => {
       setShowPanel(false)
       setTimeout(() => {
         setShowOverlay(false)
+        setTimeout(() => {
+          setShowContainer(false)
+        }, 250)
       }, 250)
     }
   }, [showSettings])
 
   return (
-    <Container className={ showSettings || showOverlay ? 'showSettings' : '' }>
-      <Panel className={ showPanel ? 'showPanel' : '' }>       
+    <Container className={ showContainer ? 'showSettings' : '' }>
+      <Panel className={ showPanel ? 'showPanel' : '' }>
         { orientation &&
-          <Orientation onClick={() => setShowOrientation(false)}>
+          <Orientation>
             gamma: { orientation.gamma }<br />
             beta: { orientation.beta }<br />
             alpha: { orientation.alpha }
@@ -94,6 +99,6 @@ const Panel = styled.div`
 const Orientation = styled.div`
   color: white;
   bottom: 20px;
-  left: 20px;
+  padding: 20px;
   font-size: 10px;
 `
