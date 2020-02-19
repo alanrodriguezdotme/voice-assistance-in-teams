@@ -86,16 +86,6 @@ const Container = styled.div`
   overflow: hidden;
 `
 
-const Orientation = styled.div`
-  position: absolute;
-  z-index: 9000;
-  background: black;
-  color: white;
-  bottom: 20px;
-  left: 20px;
-  font-size: 10px;
-`
-
 const Permission = styled.div`
   position: absolute;
   z-index: 9500;

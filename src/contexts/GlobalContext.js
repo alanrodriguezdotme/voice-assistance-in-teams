@@ -26,6 +26,7 @@ const GlobalContextProvider = (props) => {
 		setAvatarState('calm')
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
+		setChatData(null)
 	}
 
 	function getMobileOperatingSystem() {
