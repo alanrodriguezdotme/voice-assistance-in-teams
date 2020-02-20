@@ -95,12 +95,14 @@ const LuisContextProvider = (props) => {
 								type: 'message' 
 							})
 
-							personName = personNameObject && personNameObject.entity
-							message = messageObject && messageObject.entity
+							if (personNameObject) {
+								personName = personNameObject && personNameObject.entity
+								newChatData = { ...getName(personName) }
+							}
 
-							newChatData = {
-								...getName(personName),
-								message
+							if (messageObject) {
+								message = messageObject.entity
+								newChatData.message = message
 							}
 						}
 
@@ -112,6 +114,7 @@ const LuisContextProvider = (props) => {
 									break
 								
 								case 'triggerMessageSkill':
+									console.log(newChatData)
 									setChatData(newChatData)
 
 									if (fullAttentionMode) {

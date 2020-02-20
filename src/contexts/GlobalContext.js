@@ -10,7 +10,7 @@ const GlobalContextProvider = (props) => {
 	let [ showMic, setShowMic ] = useState(true)
 	let [ showUtterance, setShowUtterance ] = useState(false)
 	let [ utterance, setUtterance ] = useState(null)
-	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
+	let [ showCortanaPanel, setShowCortanaPanel ] = useState(true)
 	let [ luisResponse, setLuisResponse ] = useState(null)
 	let [ cortanaText, setCortanaText ] = useState(null)
 	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
@@ -18,7 +18,7 @@ const GlobalContextProvider = (props) => {
 	let [ chatData, setChatData ] = useState(null)
 	let [ orientation, setOrientation ] = useState(null)
 	let [ showSettings, setShowSettings ] = useState(false)
-	let [ fullAttentionMode, setFullAttentionMode ] = useState(true)
+	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -26,7 +26,6 @@ const GlobalContextProvider = (props) => {
 		setAvatarState('calm')
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
-		setChatData(null)
 	}
 
 	function getMobileOperatingSystem() {

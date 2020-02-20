@@ -11,11 +11,9 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData = { firstName: null, message: null } }) => {
+const TeamsChat = ({ chatData }) => {
   let { firstName, message } = chatData
-  console.log(chatData)
   let { chatMessages, setChatMessages, setShowTeamsChat } = useContext(GlobalContext)
-
   let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
 

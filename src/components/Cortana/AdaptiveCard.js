@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import UserPhoto from '../UserPhoto'
 
-const AdaptiveCard = ({ firstName = 'Jane', lastName = 'Doe', message = '', photo = null }) => {
+const AdaptiveCard = ({ chatData = { firstName: 'Jane', lastName: 'Doe', message: '', photo: null } }) => {
 
   return (
     <Container>

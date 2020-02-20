@@ -8,6 +8,7 @@ import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 import VoiceMeter from './VoiceMeter'
 import AdaptiveCard from './AdaptiveCard'
 import CortanaAvatar from './CortanaAvatar'
+import CortanaPanelContent from './CortanaPanelContent'
 // import { BrowserSTTContext } from '../../contexts/BrowserSTTContext'
 
 const options = {
@@ -26,42 +27,42 @@ const CortanaPanel = ({
   let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, fullAttentionMode, chatData, avatarState } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
   // const { sttStop } = useContext(BrowserSTTContext)
-  let [ showOverlay, setShowOverlay ] = useState(false)
-  let [ showPanel, setShowPanel ] = useState(false)
-  // let [ showFullPanel, setShowFullPanel ] = useState(true)
-  let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && !fullAttentionMode && chatData)
+  let [ showOverlay, setShowOverlay ] = useState(true)
+  let [ showPanel, setShowPanel ] = useState(true)
+  let [ showFullPanel, setShowFullPanel ] = useState(true)
+  // let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && !fullAttentionMode && chatData)
 
   // handle timing of transitions
   useEffect(() => {
-    if (showCortanaPanel) {
-      setShowOverlay(true)
-      setTimeout(() => {
-        setShowPanel(true)
-        // startListening()
-      }, 350)
-    } else {
-      setShowPanel(false)
-      setTimeout(() => {
-        setShowOverlay(false)
-      }, 350)
-    }
+    // if (showCortanaPanel) {
+    //   setShowOverlay(true)
+    //   setTimeout(() => {
+    //     setShowPanel(true)
+    //     // startListening()
+    //   }, 350)
+    // } else {
+    //   setShowPanel(false)
+    //   setTimeout(() => {
+    //     setShowOverlay(false)
+    //   }, 350)
+    // }
   }, [showCortanaPanel])
 
   useEffect(() => {
-    if (luisResponse && !fullAttentionMode && chatData) {
-      setShowFullPanel(true)
-    } else {
-      setShowFullPanel(false)
-    }
+    // if (luisResponse && !fullAttentionMode && chatData) {
+    //   setShowFullPanel(true)
+    // } else {
+    //   setShowFullPanel(false)
+    // }
   }, [luisResponse, fullAttentionMode, chatData])
 
   function renderCortanaText () {
     let text = ''
-    if (!luisResponse) {
+    // if (!luisResponse) {
       text = "How can I help you?"
-    } else {
-      text = "I'm on it..."
-    }
+    // } else {
+    //   text = "I'm on it..."
+    // }
 
     return (
       <CortanaText>
@@ -104,26 +105,31 @@ const CortanaPanel = ({
         { showFullPanel && 
           <Top>
             <Button onClick={ () => handleOverlayClick() }>
-              <i className="icon-teams icon-teams-Back" />
+              <i className="icon-teams icon-teams-Cancel" />
             </Button>
             <div className="spacer" />
           </Top>
         }
         {
-          chatData && !fullAttentionMode &&
+          // chatData && !fullAttentionMode &&
             <Content>
               <CortanaAvatar
+                image={ chatData && chatData.photo && chatData.photo }
+                size={ 'large' }
                 state={ avatarState } />
-              <Title>
+              <Title className="fullPanel">
                 { renderCortanaText() }
               </Title>
-              <Cards>
-                <AdaptiveCard 
+              <Scroll>
+                <CortanaPanelContent
+                  type="message"
+                  data={ chatData } />                  
+                {/* <AdaptiveCard 
                   firstName={ chatData.firstName && chatData.firstName }
                   lastName={ chatData.lastName && chatData.lastName }
                   message={ chatData.message && chatData.message }
-                  photo={ chatData.photo && chatData.photo } />
-              </Cards>
+                  photo={ chatData.photo && chatData.photo } /> */}
+              </Scroll>
             </Content>
         }
         <Main>
@@ -136,8 +142,12 @@ const CortanaPanel = ({
           }
         </Main>
         <Controls>
-          { sttState != null &&
+          { sttState != null ?
             <VoiceMeter sttState={ sttState } color="#6B6BA0" />
+            :
+            <Microphone>
+              <i className="icon-teams icon-teams-Microphone" />
+            </Microphone>
           }
         </Controls>
       </Panel>
@@ -170,7 +180,7 @@ const Overlay = styled.div`
   top: 0;
   left: 0;
   opacity: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: #6264a7;
   transition: opacity 350ms cubic-bezier(.1, .69, .38, .9);
 
   &.showOverlay {
@@ -219,6 +229,7 @@ const Top = styled.div`
   justify-content: center;
   padding: 0 20px;
   margin-bottom: 44px;
+  color: #212121;
 
   .spacer {
     flex: 1;
@@ -232,7 +243,6 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: #212121;
 `
 
 const Content = styled.div`
@@ -245,9 +255,14 @@ const Content = styled.div`
 const Title = styled.div`
   max-height: 100px;
   padding: 24px 0 40px 0;
+  font-weight: bold;
+
+  &.fullPanel {
+    font-size: 28px;
+  }
 `
 
-const Cards = styled.div`
+const Scroll = styled.div`
   flex: 1;
   overflow-y: auto;
 `
@@ -275,9 +290,20 @@ const Utterance = styled.div`
 `
 
 const Controls = styled.div`
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 35px;
+  margin-bottom: 72px;
+`
+
+const Microphone = styled.div`
+  width: 72px;
+  height: 72px;
+  background: rgba(98, 100, 167, 0.07);
+  border-radius: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #6264a7;
 `

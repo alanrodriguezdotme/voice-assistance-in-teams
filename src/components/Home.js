@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import TeamsHome from './Teams/TeamsHome'
@@ -66,7 +66,7 @@ const Home = ({ os }) => {
           renderPermission()
       }
       <Settings showSettings={ showSettings } />
-      { showTeamsChat && 
+      { showTeamsChat && chatData && 
         <TeamsChat chatData={ chatData } />}
       <CortanaPanel />
       <TeamsHome />

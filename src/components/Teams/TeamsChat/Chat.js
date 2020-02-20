@@ -6,16 +6,24 @@ const Chat = ({ content, firstName }) => {
 
   let renderMessages = () => {
     return content.messages.map((message, index) => {
+      let isFromLastPerson = content.messages[index - 1].lastName === content.messages[index].lastName
+
       if (message.lastName != 'user') {
         return (
-          <Row className="fromRecipient" key={ 'message' + index }>
-            { message.photo && 
-              <UserPhoto>
-                <img src={ 'assets/' + message.photo } />
-              </UserPhoto>
+          <Row className={ isFromLastPerson ? "fromRecipient" : "fromRecipient moreSpaceOnTop" } key={ 'message' + index }>
+            { 
+              message.photo && index > 0 && isFromLastPerson ? 
+                <UserPhoto>
+                  <img src={ 'assets/' + message.photo } />
+                </UserPhoto>
+                :
+                <div style={{ width: '32px', height: '32px' }} />
             }
             <Message className="fromRecipient">
-              <div className="name">{ firstName + ' ' + message.lastName }</div>
+              {
+                index > 0 && isFromLastPerson &&
+                  <div className="name">{ firstName + ' ' + message.lastName }</div>
+              }
               { message.message }
             </Message>
           </Row>
@@ -108,6 +116,11 @@ const Messages = styled.div`
 
 const Row = styled.div`
   display: flex;
+  padding: 0 16px;
+
+  &.moreSpaceOnTop {
+    margin-top: 12px;
+  }
 
   &.fromUser {
     justify-content: flex-end;
@@ -115,7 +128,6 @@ const Row = styled.div`
 
   &.fromRecipient {
     justify-content: flex-start;
-    margin: 12px 0;
   }
 `
 
@@ -146,7 +158,6 @@ const Message = styled.div`
 
   &.fromUser {
     background: #6264a1;
-    margin-right: 12px;
     color: #fff;
   }
 

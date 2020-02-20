@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import classNames from 'classnames'
 
-const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large' }) => {
+const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image=null }) => {
 	let cortanaOuter = classNames('cortanaLogo-outerRing cortanaLogo-outerRing--calm', {
 		'cortanaLogo-outerRing--listening': state == 'listening',
 		'cortanaLogo-outerRing--thinking': state == 'thinking',
@@ -15,11 +15,20 @@ const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#
 		'cortanaLogo-innerRing--speaking': state == 'speaking',
 	})
 
+	function renderImage() {
+		if (image) {
+			return (
+				<Image image={ image } />
+			)
+		}
+	}
+
 	return (
 		<Container 
 			outerColor={outerColor}
 			innerColor={innerColor}
 			size={size}>
+			{ image && renderImage() }
 			<div className={cortanaOuter}></div>
 			<div className={cortanaInner}></div>
 		</Container>
@@ -73,14 +82,14 @@ const Container = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 64px;
+	height: 200px;
 
 	animation: ${fadeIn} 350ms ease-in-out;
 	animation-fill-mode: forwards;
 
 	.cortanaLogo-outerRing {
-		height: ${ p => p.size == 'large' ? '64px' : '48px' };
-		width: ${ p => p.size == 'large' ? '64px' : '48px' };
+		height: ${ p => p.size == 'large' ? '192px' : '48px' };
+		width: ${ p => p.size == 'large' ? '192px' : '48px' };
 		background: ${ p => p.outerColor };
 		border-radius: 100%;
 		transition: all 350ms ease-in-out;
@@ -97,7 +106,7 @@ const Container = styled.div`
 			background: transparent;
 			animation-fill-mode: forwards;
 			animation-iteration-count: infinite;
-			border: 5px solid ${ p => p.outerColor };
+			border: 12px solid ${ p => p.outerColor };
 			height: ${ p => p.size == 'large' ? '60px' : '42px' };
 			width: ${ p => p.size == 'large' ? '60px' : '42px' };
 		}
@@ -116,14 +125,16 @@ const Container = styled.div`
 	}
 
 	.cortanaLogo-innerRing {
-		height: ${ p => p.size == 'large' ? '40px' : '32px' };
-		width: ${ p => p.size == 'large' ? '40px' : '32px' };
+		height: ${ p => p.size == 'large' ? '151px' : '32px' };
+		width: ${ p => p.size == 'large' ? '151px' : '32px' };
 		border: 3px solid ${ p => p.innerColor};
-		background: #F9F8F7;
+		border-width: ${ p => p.size == 'large' ? '12px' : '3px' };
+		background: #faf9f8;
 		border-radius: 100%;
 		transition: all 350ms ease-in-out;
 		position: absolute;
 		animation-delay: 1s;
+		z-index: 200;
 
 		&--calm {
 			animation: ${calmInner} 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -155,4 +166,15 @@ const Container = styled.div`
 			animation-iteration-count: infinite;
 		}
 	}
+`
+
+const Image = styled.div`
+	height: 130px;
+	width: 130px;
+	background: ${ p => p.image ? 'url("' + p.image + '")' : 'white' };
+	background-position: center;
+	background-size: contain;
+	border-radius: 115px;
+	position: absolute;
+	z-index: 100;
 `
