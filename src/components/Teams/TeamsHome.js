@@ -1,12 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
+import classNames from 'classnames'
+
 import TeamsHeader from './TeamsHeader'
 import TeamsFeed from './TeamsFeed'
 import TeamsNav from './TeamsNav'
 
-const TeamsHome = () => {
+const TeamsHome = ({ selectedModel, showCortanaPanel, actions }) => {
+  let { resetCortana, recognizerStop } = actions
+  function handleClick() {
+    if (selectedModel === 'hybrid' && showCortanaPanel) {
+      resetCortana()
+      recognizerStop()
+    }
+  }
+
+  let containerClasses = classNames({
+    'hybrid': selectedModel === 'hybrid',
+    'showCortanaPanel': showCortanaPanel
+  })
+
   return (
-    <Container>
+    <Container
+      className={ containerClasses }
+      onClick={ () => handleClick() }
+      selectedModel={ selectedModel }>
       <TeamsHeader />
       <TeamsFeed />
       <TeamsNav />

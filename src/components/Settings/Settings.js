@@ -2,10 +2,12 @@ import React, { useContext, useState, useEffect } from 'react'
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
 import styled from 'styled-components'
+import Toggle from 'react-toggle'
+
 import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
-  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana } = useContext(GlobalContext)
+  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, playTts, setPlayTts, } = useContext(GlobalContext)
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -35,6 +37,11 @@ const Settings = ({ showSettings }) => {
     resetCortana()
   }
 
+  function handleTtsChange(event) {
+    console.log(event.target.checked)
+    setPlayTts(!event.target.checked)
+  }
+
   return (
     <Container className={ showContainer ? 'showSettings' : '' }>
       <Panel className={ showPanel ? 'showPanel' : '' }>
@@ -44,6 +51,13 @@ const Settings = ({ showSettings }) => {
             options={ modelOptions }
             onChange={ (option) => handleModelChange(option) }
             value={ selectedModel } />
+        </Control>
+        <Control>
+          <Label>TTS (hybrid and distracted)</Label>
+          <Toggle
+            checked={ playTts }
+            defaultChecked={ playTts }
+            onChange={ (event) => handleTtsChange(event) } />
         </Control>
         { orientation &&
           <Orientation>

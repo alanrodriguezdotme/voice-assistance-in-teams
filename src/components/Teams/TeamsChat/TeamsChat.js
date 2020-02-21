@@ -11,7 +11,7 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData }) => {
+const TeamsChat = ({ chatData, selectedModel }) => {
   let { firstName, message } = chatData
   let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
   let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
@@ -55,7 +55,8 @@ const TeamsChat = ({ chatData }) => {
   }
 
   return (
-    <Container>
+    <Container
+      className={ selectedModel }>
       <Header>
         <div className="left">
           <i className="icon-teams icon-teams-Back"
@@ -111,7 +112,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background: white;
-  position: absolute;
   top: 0;
   left: 0;
   z-index: 1001;

@@ -32,6 +32,7 @@ const GlobalContextProvider = (props) => {
 	let [ showSettings, setShowSettings ] = useState(false)
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
 	let [ selectedModel, setSelectedModel ] = useState('hybrid')
+	let [ playTts, setPlayTts ] = useState(true)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -75,7 +76,7 @@ const GlobalContextProvider = (props) => {
 			if (beta > 20) {
 				setFullAttentionMode(true)
 			} else { 
-				setFullAttentionMode(false) 
+				setFullAttentionMode(false)
 			}
 		}, false);
 	}
@@ -106,6 +107,7 @@ const GlobalContextProvider = (props) => {
 			showSettings, setShowSettings,
 			fullAttentionMode, setFullAttentionMode,
 			selectedModel, setSelectedModel,
+			playTts, setPlayTts,
 			resetCortana,
 			orientation,
 			initSensor,

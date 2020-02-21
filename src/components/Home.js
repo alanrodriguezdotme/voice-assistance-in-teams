@@ -1,14 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
+import classNames from 'classnames'
 
 import TeamsHome from './Teams/TeamsHome'
 import CortanaPanel from './Cortana/CortanaPanel'
 import { GlobalContext } from '../contexts/GlobalContext'
 import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
+import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 
 const Home = ({ os }) => {
-  let { showTeamsChat, chatData, initSensor, showSettings, cortanaText, selectedModel, showCortanaPanel } = useContext(GlobalContext)
+  let { showTeamsChat, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel } = useContext(GlobalContext)
+  let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
   function getMedia(constraints) {
@@ -58,6 +61,11 @@ const Home = ({ os }) => {
     )
   }
 
+  let teamsWrapperClasses = classNames({
+    'hybrid': selectedModel === 'hybrid',
+    'showCortanaPanel': showCortanaPanel
+  })
+
   return (
     <Container
       selectedModel={ selectedModel }>
@@ -68,10 +76,19 @@ const Home = ({ os }) => {
       }
       <Settings 
         showSettings={ showSettings } />
-      { showTeamsChat && chatData && 
-        <TeamsChat 
-          chatData={ chatData } /> }
-      <TeamsHome />
+      <TeamsWrapper classNames={ teamsWrapperClasses }>
+        { showTeamsChat ?
+          <TeamsChat 
+            actions={{ resetCortana, recognizerStop }}
+            chatData={ chatData }
+            selectedModel={ selectedModel } /> 
+          :
+          <TeamsHome
+            actions={{ resetCortana, recognizerStop }}
+            selectedModel={ selectedModel }
+            showCortanaPanel={ showCortanaPanel } />
+        }
+      </TeamsWrapper>
       <CortanaPanel
         showCortanaPanel={ showCortanaPanel }
         cortanaText={ cortanaText }
@@ -93,6 +110,19 @@ const Container = styled.div`
   overflow: hidden;
   display: ${ p => p.selectedModel === 'hybrid' ? 'flex' : 'block' };
   flex-direction: column;
+`
+
+const TeamsWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  transition: height 350ms cubic-bezier(.1, .69, .38, .9);
+
+  &.hybrid {
+    &.showCortanaPanel {
+      height: calc(100% - 200px);
+    }
+  }
 `
 
 const Permission = styled.div`

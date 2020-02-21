@@ -44,29 +44,6 @@ const LuisContextProvider = (props) => {
 		return { firstName, lastName }
 	}
 
-	const speak = (text, openMicAgain, followUp, actions) => {
-		speech.speak({
-			text,
-			queue: false,
-			listeners: {
-				onstart: () => {
-					if (followUp && !pauseAfterTts) { followUp(actions) }
-					console.log("Start utterance")
-				},
-				onend: () => {
-					if (followUp && pauseAfterTts) { followUp(actions) }
-					if (openMicAgain) {
-						handleMicClick({getLuisResponse})
-					}
-					console.log("End utterance")
-				}
-			}
-		})
-		.catch(err => {
-			console.error(err)
-		})
-	}
-
 	const getLuisResponse = (utterance, actions) => {
 		// Alan's LUIS account
 		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
@@ -130,7 +107,6 @@ const LuisContextProvider = (props) => {
 											title: "What's your message for " + fullName + "?",
 											subtitle: null
 										})
-
 									}
 
 									break

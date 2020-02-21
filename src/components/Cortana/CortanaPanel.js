@@ -28,18 +28,28 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
 
   // handle timing of transitions
   useEffect(() => {
-    if (showCortanaPanel) {
-      setShowOverlay(true)
-      setTimeout(() => {
-        setShowPanel(true)
-      }, 350)
+    if (selectedModel != 'hybrid') {
+      if (showCortanaPanel) {
+        setShowOverlay(true)
+        setTimeout(() => {
+          setShowPanel(true)
+        }, 350)
+      } else {
+        setShowPanel(false)
+        setTimeout(() => {
+          setShowOverlay(false)
+        }, 350)
+      }
     } else {
-      setShowPanel(false)
-      setTimeout(() => {
+      if (showCortanaPanel) {
+        setShowPanel(true)
+        setShowOverlay(true)
+      } else {
+        setShowPanel(false)
         setShowOverlay(false)
-      }, 350)
+      }
     }
-  }, [showCortanaPanel])
+  }, [showCortanaPanel, selectedModel])
 
   useEffect(() => {
     if (showCortanaPanel) {
@@ -66,6 +76,12 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
       if (selectedModel === 'full attention' && chatData.firstName) {
         setShowCortanaPanel(false)
         setShowTeamsChat(true)
+      }
+
+      if (selectedModel === 'hybrid') {
+        if (chatData.firstName) {
+          setShowTeamsChat(true)
+        }
       }
     }
   }, [luisResponse, selectedModel, chatData, showCortanaPanel])
@@ -100,8 +116,13 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
     'fullPanel': showFullPanel
   })
 
+  let containerClasses = classNames({
+    'showOverlay': showOverlay,
+    'hybrid': selectedModel === 'hybrid'
+  })
+
   return (
-    <Container className={ showOverlay ? 'showOverlay' : '' }
+    <Container className={ containerClasses }
       selectedModel={ selectedModel }>
       { selectedModel === 'hybrid' && 
         <Overlay className={ overlayClasses }
@@ -164,7 +185,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
 export default SpeechRecognition(options)(CortanaPanel)
 
 const Container = styled.div`
-  position: ${ p => p.selectedModel === 'hybrid' ? 'relative' : 'absolute' };
+  position: absolute;
   width: 100%;
   height: 0;
   top: 100%;
@@ -176,6 +197,14 @@ const Container = styled.div`
     height: 100%;
     opacity: 1;
     top: 0;
+  }
+
+  &.hybrid {
+    position: relative;
+
+    &.showOverlay {
+      height: 200px;
+    }
   }
 `
 
@@ -228,6 +257,9 @@ const Panel = styled.div`
 
   &.hybrid {
     border-radius: 0;
+    height: 100%;
+    transition: none;
+    box-shadow: inset 0px 2px 4px 0px rgba(0, 0, 0, 0.05);
   }
 
   .tab {
