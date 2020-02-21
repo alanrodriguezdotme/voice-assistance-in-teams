@@ -91,7 +91,8 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
 
   let panelClasses = classNames({
     'showPanel': showPanel,
-    'fullPanel': showFullPanel
+    'fullPanel': showFullPanel,
+    'hybrid': selectedModel === 'hybrid'
   })
 
   let overlayClasses = classNames({
@@ -100,9 +101,12 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
   })
 
   return (
-    <Container className={ showOverlay ? 'showOverlay' : '' }>
-      <Overlay className={ overlayClasses }
-        onClick={ () => handleOverlayClick() } />
+    <Container className={ showOverlay ? 'showOverlay' : '' }
+      selectedModel={ selectedModel }>
+      { selectedModel === 'hybrid' && 
+        <Overlay className={ overlayClasses }
+          onClick={ () => handleOverlayClick() } />
+      }
       <Panel className={ panelClasses }>
         <div className="tab"></div>
         { showFullPanel &&
@@ -160,7 +164,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
 export default SpeechRecognition(options)(CortanaPanel)
 
 const Container = styled.div`
-  position: absolute;
+  position: ${ p => p.selectedModel === 'hybrid' ? 'relative' : 'absolute' };
   width: 100%;
   height: 0;
   top: 100%;
@@ -220,6 +224,10 @@ const Panel = styled.div`
   &.fullPanel {
     height: calc(100% - 20px);
     transform: translateY(-100%);
+  }
+
+  &.hybrid {
+    border-radius: 0;
   }
 
   .tab {

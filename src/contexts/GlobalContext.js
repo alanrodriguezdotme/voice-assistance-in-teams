@@ -31,7 +31,7 @@ const GlobalContextProvider = (props) => {
 	let [ orientation, setOrientation ] = useState(null)
 	let [ showSettings, setShowSettings ] = useState(false)
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
-	let [ selectedModel, setSelectedModel ] = useState('distracted')
+	let [ selectedModel, setSelectedModel ] = useState('hybrid')
 
 	const resetCortana = () => {
 		setSttState(null)

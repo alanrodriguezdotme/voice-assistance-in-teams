@@ -59,7 +59,8 @@ const Home = ({ os }) => {
   }
 
   return (
-    <Container>
+    <Container
+      selectedModel={ selectedModel }>
       { 
         os === 'iOS' && 
         showPermission &&
@@ -69,13 +70,13 @@ const Home = ({ os }) => {
         showSettings={ showSettings } />
       { showTeamsChat && chatData && 
         <TeamsChat 
-          chatData={ chatData } />}
+          chatData={ chatData } /> }
+      <TeamsHome />
       <CortanaPanel
         showCortanaPanel={ showCortanaPanel }
         cortanaText={ cortanaText }
         selectedModel={ selectedModel }
         chatData={ chatData } />
-      <TeamsHome />
     </Container>
   )
 }
@@ -90,6 +91,8 @@ const Container = styled.div`
   background: white;
   position: relative;
   overflow: hidden;
+  display: ${ p => p.selectedModel === 'hybrid' ? 'flex' : 'block' };
+  flex-direction: column;
 `
 
 const Permission = styled.div`

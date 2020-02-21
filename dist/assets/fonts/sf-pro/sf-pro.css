@@ -2,12 +2,12 @@
   font-family: "San Francisco";
   font-weight: normal;
 	src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscotext-regular-webfont.woff") format("woff");
-	src: url("/assets/fonts/sf-pro/SF-Pro-Display-Regular.otf") format("opentype");
+	src: url("./assets/fonts/sf-pro/SF-Pro-Display-Regular.otf") format("opentype");
 }
 
 @font-face {
   font-family: "San Francisco";
   font-weight: bold;
 	src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscotext-semibold-webfont.woff") format("woff");
-	src: url("/assets/fonts/sf-pro/SF-Pro-Display-Semibold.otf") format("opentype");
+	src: url("./assets/fonts/sf-pro/SF-Pro-Display-Semibold.otf") format("opentype");
 }

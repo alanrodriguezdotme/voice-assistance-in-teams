@@ -9,7 +9,7 @@ const Settings = ({ showSettings }) => {
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
-  const modelOptions = [ 'distracted', 'full attention' ]
+  const modelOptions = [ 'distracted', 'full attention', 'hybrid' ]
 
   useEffect(() => {
     if (showSettings) {
