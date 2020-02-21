@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import classNames from 'classnames'
 
-const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image=null }) => {
+const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image="assets/profilePic3.png" }) => {
 	let cortanaOuter = classNames('cortanaLogo-outerRing cortanaLogo-outerRing--calm', {
 		'cortanaLogo-outerRing--listening': state == 'listening',
 		'cortanaLogo-outerRing--thinking': state == 'thinking',
@@ -24,7 +24,8 @@ const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#
 	}
 
 	return (
-		<Container 
+		<Container
+			className={size}
 			outerColor={outerColor}
 			innerColor={innerColor}
 			size={size}>
@@ -107,8 +108,8 @@ const Container = styled.div`
 			animation-fill-mode: forwards;
 			animation-iteration-count: infinite;
 			border: 12px solid ${ p => p.outerColor };
-			height: ${ p => p.size == 'large' ? '60px' : '42px' };
-			width: ${ p => p.size == 'large' ? '60px' : '42px' };
+			height: ${ p => p.size == 'large' ? '192px' : '42px' };
+			width: ${ p => p.size == 'large' ? '192px' : '42px' };
 		}
 
 		&--listening {
@@ -147,9 +148,9 @@ const Container = styled.div`
 			animation-fill-mode: forwards;
 			animation-iteration-count: infinite;
 			background: transparent;
-			border-width: 5px;
-			height: ${ p => p.size == 'large' ? '40px' : '32px' };
-			width: ${ p => p.size == 'large' ? '40px' : '32px' };
+			border-width: ${ p => p.size == 'large' ? '12px' : '3px' };
+			height: ${ p => p.size == 'large' ? '151px' : '32px' };
+			width: ${ p => p.size == 'large' ? '151px' : '32px' };
 		}
 
 		&--listening {
@@ -171,10 +172,11 @@ const Container = styled.div`
 const Image = styled.div`
 	height: 130px;
 	width: 130px;
-	background: ${ p => p.image ? 'url("' + p.image + '")' : 'white' };
+	background-image: ${ p => p.image ? 'url("' + p.image + '")' : null };
+	background-color: red;
 	background-position: center;
 	background-size: contain;
 	border-radius: 115px;
 	position: absolute;
-	z-index: 100;
+	z-index: 1000;
 `

@@ -117,13 +117,14 @@ const LuisContextProvider = (props) => {
 									console.log(newChatData)
 									setChatData(newChatData)
 
-									if (fullAttentionMode) {
-										resetCortana()
-										setShowTeamsChat(true)
-										break
-									} else {
+									// if (fullAttentionMode) {
+									// 	resetCortana()
+									// 	setShowTeamsChat(true)
+									// 	break
+									// } else {
 										
-									}
+									// }
+									break
 
 								default:
 									console.log('no actions found for this intent: ' + intent)

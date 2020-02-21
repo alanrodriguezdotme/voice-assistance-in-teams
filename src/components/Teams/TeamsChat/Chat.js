@@ -1,18 +1,18 @@
 import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 
-const Chat = ({ content, firstName }) => {
-  let [ recipientsValue, setRecipientsValue ] = useState(firstName + ' ' + 'Jamil')
+const Chat = ({ content, firstName, lastName = 'Jamil' }) => {
+  let [ recipientsValue, setRecipientsValue ] = useState(firstName + ' ' + lastName)
 
   let renderMessages = () => {
     return content.messages.map((message, index) => {
-      let isFromLastPerson = content.messages[index - 1].lastName === content.messages[index].lastName
+      let isFromLastPerson = index > 0 ? content.messages[index - 1].lastName === content.messages[index].lastName : null
 
       if (message.lastName != 'user') {
         return (
           <Row className={ isFromLastPerson ? "fromRecipient" : "fromRecipient moreSpaceOnTop" } key={ 'message' + index }>
             { 
-              message.photo && index > 0 && isFromLastPerson ? 
+              message.photo && !isFromLastPerson ? 
                 <UserPhoto>
                   <img src={ 'assets/' + message.photo } />
                 </UserPhoto>
@@ -21,7 +21,7 @@ const Chat = ({ content, firstName }) => {
             }
             <Message className="fromRecipient">
               {
-                index > 0 && isFromLastPerson &&
+                !isFromLastPerson &&
                   <div className="name">{ firstName + ' ' + message.lastName }</div>
               }
               { message.message }
@@ -144,6 +144,7 @@ const UserPhoto = styled.div`
 const Message = styled.div`
   max-width: 65%;
   width: auto;
+  min-width: 85px;
   padding: 6px;
   line-height: 18px;
   margin-bottom: 2px;

@@ -1,12 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react'
+import Dropdown from 'react-dropdown'
+import 'react-dropdown/style.css'
 import styled from 'styled-components'
 import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
-  let { setShowSettings, orientation } = useContext(GlobalContext)
+  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, setChatData } = useContext(GlobalContext)
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
+  const modelOptions = [ 'distracted', 'full attention' ]
 
   useEffect(() => {
     if (showSettings) {
@@ -26,9 +29,23 @@ const Settings = ({ showSettings }) => {
     }
   }, [showSettings])
 
+  function handleModelChange(option) {
+    console.log(option.value)
+    setSelectedModel(option.value)
+    resetCortana()
+    setChatData(null)
+  }
+
   return (
     <Container className={ showContainer ? 'showSettings' : '' }>
       <Panel className={ showPanel ? 'showPanel' : '' }>
+        <Control>
+          <Label>Select a model</Label>
+          <Dropdown
+            options={ modelOptions }
+            onChange={ (option) => handleModelChange(option) }
+            value={ selectedModel } />
+        </Control>
         { orientation &&
           <Orientation>
             gamma: { orientation.gamma }<br />
@@ -40,7 +57,6 @@ const Settings = ({ showSettings }) => {
       <Overlay 
         className={ showOverlay ? 'showOverlay' : '' }
         onClick={ () => setShowSettings(false) } />
-
     </Container>
   )
 }
@@ -96,9 +112,20 @@ const Panel = styled.div`
   }
 `
 
+const Control = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px;
+`
+
+const Label = styled.div`
+  flex: 1;
+  color: white;
+`
+
 const Orientation = styled.div`
   color: white;
   bottom: 20px;
-  padding: 20px;
+  padding: 8px;
   font-size: 10px;
 `

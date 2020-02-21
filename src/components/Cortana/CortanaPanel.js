@@ -8,65 +8,79 @@ import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 import VoiceMeter from './VoiceMeter'
 import AdaptiveCard from './AdaptiveCard'
 import CortanaAvatar from './CortanaAvatar'
-import CortanaPanelContent from './CortanaPanelContent'
-// import { BrowserSTTContext } from '../../contexts/BrowserSTTContext'
 
 const options = {
   autoStart: false,
   continuous: false
 }
 
-const CortanaPanel = ({
-  resetTranscript,
-  startListening,
-  stopListening,
-  listening,
-  interimTranscript,
-  finalTranscript,
-  browserSupportsSpeechRecognition }) => {
-  let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, fullAttentionMode, chatData, avatarState } = useContext(GlobalContext)
-  let { recognizerStop } = useContext(SpeechToTextContext)
-  // const { sttStop } = useContext(BrowserSTTContext)
-  let [ showOverlay, setShowOverlay ] = useState(true)
-  let [ showPanel, setShowPanel ] = useState(true)
-  let [ showFullPanel, setShowFullPanel ] = useState(true)
-  // let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && !fullAttentionMode && chatData)
+const CortanaPanel = () => {
+  let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, chatData, avatarState, getLuisResponse, selectedModel, setShowTeamsChat, setChatData } = useContext(GlobalContext)
+  let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
+  let [ showOverlay, setShowOverlay ] = useState(false)
+  let [ showPanel, setShowPanel ] = useState(false)
+  // let [ showFullPanel, setShowFullPanel ] = useState(true)
+  let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && selectedModel === 'distracted' && chatData)
 
   // handle timing of transitions
   useEffect(() => {
-    // if (showCortanaPanel) {
-    //   setShowOverlay(true)
-    //   setTimeout(() => {
-    //     setShowPanel(true)
-    //     // startListening()
-    //   }, 350)
-    // } else {
-    //   setShowPanel(false)
-    //   setTimeout(() => {
-    //     setShowOverlay(false)
-    //   }, 350)
-    // }
+    if (showCortanaPanel) {
+      setShowOverlay(true)
+      setTimeout(() => {
+        setShowPanel(true)
+      }, 350)
+    } else {
+      setShowPanel(false)
+      setTimeout(() => {
+        setShowOverlay(false)
+      }, 350)
+    }
   }, [showCortanaPanel])
 
   useEffect(() => {
-    // if (luisResponse && !fullAttentionMode && chatData) {
-    //   setShowFullPanel(true)
-    // } else {
-    //   setShowFullPanel(false)
-    // }
-  }, [luisResponse, fullAttentionMode, chatData])
+    if (showCortanaPanel) {    
+      console.log(selectedModel)  
+      if (selectedModel === 'distracted') {
+        if (luisResponse && chatData) {
+          setShowFullPanel(true)
+        } else {
+          setShowFullPanel(false)
+        }
+    
+        if (chatData && !chatData.message) {
+          handleMicClick(null, true)
+        }
+      } else {        
+        setShowFullPanel(false)
+      }
+
+      if (selectedModel === 'full attention' && chatData) {
+        if (chatData.firstName) {
+          setChatData({ ...chatData, lastName: 'Jamil' })
+          setShowCortanaPanel(false)
+          setShowTeamsChat(true)
+        }
+      }
+    }
+  }, [luisResponse, selectedModel, chatData, showCortanaPanel])
 
   function renderCortanaText () {
     let text = ''
-    // if (!luisResponse) {
+    if (!luisResponse) {
       text = "How can I help you?"
-    // } else {
-    //   text = "I'm on it..."
-    // }
+    } else if (chatData) {
+      if (chatData.firstName) {
+        if (chatData.message) {
+          text = chatData.firstName + ' Jamil'
+        } else {
+          text = "What's your message to " + chatData.firstName + " Jamil?"
+        }
+      }
+    }
 
     return (
       <CortanaText>
-        { text }  
+        { text }
       </CortanaText>
 
     )
@@ -76,6 +90,7 @@ const CortanaPanel = ({
     recognizerStop()
     // sttStop()
     // stopListening()
+    setChatData(null)
     resetCortana()
   }
 
@@ -96,57 +111,62 @@ const CortanaPanel = ({
     'fullPanel': showFullPanel
   })
 
+  let overlayClasses = classNames({
+    'showOverlay': showOverlay,
+    'fullPanel': showFullPanel
+  })
+
   return (
     <Container className={ showOverlay ? 'showOverlay' : '' }>
-      <Overlay className={ showOverlay ? 'showOverlay' : '' }
+      <Overlay className={ overlayClasses }
         onClick={ () => handleOverlayClick() } />
       <Panel className={ panelClasses }>
         <div className="tab"></div>
-        { showFullPanel && 
+        { showFullPanel &&
           <Top>
             <Button onClick={ () => handleOverlayClick() }>
-              <i className="icon-teams icon-teams-Cancel" />
+              <i className="icon-teams-regular icon-teams-Cancel" />
             </Button>
             <div className="spacer" />
           </Top>
         }
-        {
-          // chatData && !fullAttentionMode &&
+        { chatData && showFullPanel &&
             <Content>
               <CortanaAvatar
                 image={ chatData && chatData.photo && chatData.photo }
                 size={ 'large' }
-                state={ avatarState } />
+                state={ 'calm' } />
               <Title className="fullPanel">
                 { renderCortanaText() }
               </Title>
               <Scroll>
-                <CortanaPanelContent
-                  type="message"
-                  data={ chatData } />                  
-                {/* <AdaptiveCard 
-                  firstName={ chatData.firstName && chatData.firstName }
-                  lastName={ chatData.lastName && chatData.lastName }
-                  message={ chatData.message && chatData.message }
-                  photo={ chatData.photo && chatData.photo } /> */}
+                { utterance && 
+                  <Utterance>
+                    { utterance }
+                  </Utterance>                
+                }
+                { chatData && chatData.message && 
+                  <Message>
+                    { chatData.message }
+                  </Message>
+                }
+                { chatData && chatData.message &&
+                  <Actions>
+                    <Action>Send</Action>
+                    <Action>Cancel</Action>
+                  </Actions> }
               </Scroll>
             </Content>
         }
-        <Main>
-          { !showFullPanel ? 
-            renderCortini()
-            :
-            <Utterance>
-              { utterance }
-            </Utterance>
-          }
-        </Main>
+        { !showFullPanel &&
+            <Main>{ renderCortini() }</Main>
+        }
         <Controls>
-          { sttState != null ?
+          { sttState ?
             <VoiceMeter sttState={ sttState } color="#6B6BA0" />
             :
-            <Microphone>
-              <i className="icon-teams icon-teams-Microphone" />
+            <Microphone onClick={ () => handleMicClick({ getLuisRsesponse }) }>
+              <i className="icon-teams-regular icon-teams-Microphone" />
             </Microphone>
           }
         </Controls>
@@ -180,11 +200,15 @@ const Overlay = styled.div`
   top: 0;
   left: 0;
   opacity: 0;
-  background: #6264a7;
-  transition: opacity 350ms cubic-bezier(.1, .69, .38, .9);
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 350ms cubic-bezier(.1, .69, .38, .9), background-color 350ms cubic-bezier(.1, .69, .38, .9);
 
   &.showOverlay {
     opacity: 1;
+  }
+
+  &.fullPanel {
+    background-color: #6264a7;
   }
 
 `
@@ -242,7 +266,7 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 18px;
 `
 
 const Content = styled.div`
@@ -254,7 +278,7 @@ const Content = styled.div`
 
 const Title = styled.div`
   max-height: 100px;
-  padding: 24px 0 40px 0;
+  padding: 24px 20px 24px 20px;
   font-weight: bold;
 
   &.fullPanel {
@@ -265,6 +289,41 @@ const Title = styled.div`
 const Scroll = styled.div`
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+`
+
+const Message = styled.div`
+  width: 100%;
+  padding: 0 20px 20px 20px;
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 0.35px;
+  line-height: 28px;
+`
+
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Action = styled.div`
+  min-width: 110px;
+  height: 48px;
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+  border: 1px solid rgb(98, 100, 167);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6264a7;
+  font-size: 18px;
+
+  &:first-child{
+    margin-right: 20px;
+  }
 `
 
 const Main = styled.div`

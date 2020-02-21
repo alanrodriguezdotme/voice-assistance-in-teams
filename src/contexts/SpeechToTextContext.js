@@ -6,11 +6,12 @@ import { GlobalContext } from '../contexts/GlobalContext'
 let subscriptionKey = '5bb1fd777df040f18623d946d3ae2833'
 let serviceRegion = 'westus'
 let recognizer
+let skipLuis = false
 
 export const SpeechToTextContext = createContext()
 
 const SpeechToTextContextProvider = (props) => {
-	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance, setShowCortanaPanel } = useContext(GlobalContext)
+	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance, setShowCortanaPanel, appendMessageToChatData } = useContext(GlobalContext)
 
 	const initStt = () => {
 		recognizer = recognizerSetup(
@@ -43,8 +44,13 @@ const SpeechToTextContextProvider = (props) => {
 		audio.play()
 	}
 
-	const handleMicClick = (actions) => {
+	const handleMicClick = (actions, shouldSkipLuis) => {
 		recognizerStart(SDK, recognizer, actions)
+		if (shouldSkipLuis != undefined && shouldSkipLuis != null) {
+			skipLuis = shouldSkipLuis
+		} else {
+			skipLuis = false
+		}
   }
 
 	const recognizerStart = (SDK, recognizer, actions) => {
@@ -91,7 +97,11 @@ const SpeechToTextContextProvider = (props) => {
 					setSttState('SpeechDetailedPhraseEvent')
 					if (event.Result.NBest) {
 						console.log(event.Result.NBest[0].ITN)
-						actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
+						if (!skipLuis) {
+							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
+						} else {
+							appendMessageToChatData(event.Result.NBest[0].ITN)
+						}
 					} else {
 						setAvatarState('calm')
 						setShowCortanaPanel(false)

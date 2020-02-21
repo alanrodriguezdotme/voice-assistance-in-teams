@@ -10,7 +10,7 @@ const GlobalContextProvider = (props) => {
 	let [ showMic, setShowMic ] = useState(true)
 	let [ showUtterance, setShowUtterance ] = useState(false)
 	let [ utterance, setUtterance ] = useState(null)
-	let [ showCortanaPanel, setShowCortanaPanel ] = useState(true)
+	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
 	let [ luisResponse, setLuisResponse ] = useState(null)
 	let [ cortanaText, setCortanaText ] = useState(null)
 	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
@@ -19,6 +19,7 @@ const GlobalContextProvider = (props) => {
 	let [ orientation, setOrientation ] = useState(null)
 	let [ showSettings, setShowSettings ] = useState(false)
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
+	let [ selectedModel, setSelectedModel ] = useState('distracted')
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -41,6 +42,10 @@ const GlobalContextProvider = (props) => {
 			}
 	
 			return "unknown";
+	}
+
+	function appendMessageToChatData(message) {
+		setChatData({ ...chatData, message })
 	}
 
 	const initSensor = () => {
@@ -85,9 +90,11 @@ const GlobalContextProvider = (props) => {
 			chatData, setChatData,
 			showSettings, setShowSettings,
 			fullAttentionMode, setFullAttentionMode,
+			selectedModel, setSelectedModel,
 			resetCortana,
 			orientation,
-			initSensor
+			initSensor,
+			appendMessageToChatData
 		}}>
 			{props.children}
 		</GlobalContext.Provider>
