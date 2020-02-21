@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
-  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, setChatData } = useContext(GlobalContext)
+  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana } = useContext(GlobalContext)
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -33,7 +33,6 @@ const Settings = ({ showSettings }) => {
     console.log(option.value)
     setSelectedModel(option.value)
     resetCortana()
-    setChatData(null)
   }
 
   return (

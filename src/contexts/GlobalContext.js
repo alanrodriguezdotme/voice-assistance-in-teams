@@ -2,6 +2,18 @@ import React, { useState, createContext, useEffect } from 'react'
 
 import TeamsChatData from './TeamsChatData'
 
+let defaultCortanaText = {
+	title: "How can I help?",
+	subtitle: null
+}
+
+let defaultChatData = {
+	firstName: null,
+	lastName: 'Jamil',
+	message: null,
+	photo: 'profilePic3.png'
+}
+
 export const GlobalContext = createContext()
 
 const GlobalContextProvider = (props) => {
@@ -12,10 +24,10 @@ const GlobalContextProvider = (props) => {
 	let [ utterance, setUtterance ] = useState(null)
 	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
 	let [ luisResponse, setLuisResponse ] = useState(null)
-	let [ cortanaText, setCortanaText ] = useState(null)
+	let [ cortanaText, setCortanaText ] = useState(defaultCortanaText)
 	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
 	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
-	let [ chatData, setChatData ] = useState(null)
+	let [ chatData, setChatData ] = useState(defaultChatData)
 	let [ orientation, setOrientation ] = useState(null)
 	let [ showSettings, setShowSettings ] = useState(false)
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
@@ -27,6 +39,8 @@ const GlobalContextProvider = (props) => {
 		setAvatarState('calm')
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
+		setCortanaText(defaultCortanaText)
+		setChatData(defaultChatData)
 	}
 
 	function getMobileOperatingSystem() {
@@ -46,6 +60,7 @@ const GlobalContextProvider = (props) => {
 
 	function appendMessageToChatData(message) {
 		setChatData({ ...chatData, message })
+		setCortanaText({ ...cortanaText, subtitle: message })
 	}
 
 	const initSensor = () => {

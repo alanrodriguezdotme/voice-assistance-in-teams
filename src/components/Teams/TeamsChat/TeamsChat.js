@@ -13,7 +13,7 @@ const capitalizeString = (str) => {
 
 const TeamsChat = ({ chatData }) => {
   let { firstName, message } = chatData
-  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana, setChatData } = useContext(GlobalContext)
+  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
   let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
 

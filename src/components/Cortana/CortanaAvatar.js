@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import classNames from 'classnames'
 
-const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image="assets/profilePic3.png" }) => {
+const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image="profilePic3.png" }) => {
 	let cortanaOuter = classNames('cortanaLogo-outerRing cortanaLogo-outerRing--calm', {
 		'cortanaLogo-outerRing--listening': state == 'listening',
 		'cortanaLogo-outerRing--thinking': state == 'thinking',
@@ -172,8 +172,7 @@ const Container = styled.div`
 const Image = styled.div`
 	height: 130px;
 	width: 130px;
-	background-image: ${ p => p.image ? 'url("' + p.image + '")' : null };
-	background-color: red;
+	background-image: ${ p => p.image ? 'url("assets/' + p.image + '")' : null };
 	background-position: center;
 	background-size: contain;
 	border-radius: 115px;

@@ -5,22 +5,26 @@ import SpeechRecognition from 'react-speech-recognition'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
+import TextToSpeech from '../../contexts/TextToSpeech'
 import VoiceMeter from './VoiceMeter'
 import AdaptiveCard from './AdaptiveCard'
 import CortanaAvatar from './CortanaAvatar'
+import { LuisContext } from '../../contexts/LuisContext'
 
 const options = {
   autoStart: false,
   continuous: false
 }
 
-const CortanaPanel = () => {
-  let { showCortanaPanel, setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, chatData, avatarState, getLuisResponse, selectedModel, setShowTeamsChat, setChatData } = useContext(GlobalContext)
+const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }) => {
+  let { setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, setCortanaText, setShowTeamsChat } = useContext(GlobalContext)
+  let { getLuisRsesponse } = useContext(LuisContext)
   let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   // let [ showFullPanel, setShowFullPanel ] = useState(true)
-  let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && selectedModel === 'distracted' && chatData)
+  let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && selectedModel === 'distracted')
+  let tts = new TextToSpeech(process.env.ACCESS_TOKEN)
 
   // handle timing of transitions
   useEffect(() => {
@@ -38,59 +42,38 @@ const CortanaPanel = () => {
   }, [showCortanaPanel])
 
   useEffect(() => {
-    if (showCortanaPanel) {    
-      console.log(selectedModel)  
+    if (showCortanaPanel) {
       if (selectedModel === 'distracted') {
-        if (luisResponse && chatData) {
+        if (luisResponse) {
           setShowFullPanel(true)
         } else {
           setShowFullPanel(false)
         }
-    
-        if (chatData && !chatData.message) {
-          handleMicClick(null, true)
+
+        if (chatData.message) {          
+          tts.speak("Do you want to send it?", () => {
+            handleMicClick({getLuisRsesponse})
+          })
+        } else if (chatData.firstName) {          
+          tts.speak("What's your message for " + chatData.firstName + "?", () => {
+            handleMicClick({getLuisRsesponse})
+          })
         }
-      } else {        
+      } else {
         setShowFullPanel(false)
       }
 
-      if (selectedModel === 'full attention' && chatData) {
-        if (chatData.firstName) {
-          setChatData({ ...chatData, lastName: 'Jamil' })
-          setShowCortanaPanel(false)
-          setShowTeamsChat(true)
-        }
+      if (selectedModel === 'full attention' && chatData.firstName) {
+        setShowCortanaPanel(false)
+        setShowTeamsChat(true)
       }
     }
   }, [luisResponse, selectedModel, chatData, showCortanaPanel])
-
-  function renderCortanaText () {
-    let text = ''
-    if (!luisResponse) {
-      text = "How can I help you?"
-    } else if (chatData) {
-      if (chatData.firstName) {
-        if (chatData.message) {
-          text = chatData.firstName + ' Jamil'
-        } else {
-          text = "What's your message to " + chatData.firstName + " Jamil?"
-        }
-      }
-    }
-
-    return (
-      <CortanaText>
-        { text }
-      </CortanaText>
-
-    )
-  }
 
   function handleOverlayClick() {
     recognizerStop()
     // sttStop()
     // stopListening()
-    setChatData(null)
     resetCortana()
   }
 
@@ -102,7 +85,7 @@ const CortanaPanel = () => {
         </Utterance>
       )
     } else {
-      return renderCortanaText()
+      return cortanaText.title
     }
   }
 
@@ -130,27 +113,26 @@ const CortanaPanel = () => {
             <div className="spacer" />
           </Top>
         }
-        { chatData && showFullPanel &&
+        { showFullPanel &&
             <Content>
               <CortanaAvatar
-                image={ chatData && chatData.photo && chatData.photo }
+                image={ chatData.photo }
                 size={ 'large' }
                 state={ 'calm' } />
               <Title className="fullPanel">
-                { renderCortanaText() }
+                { cortanaText.title }
               </Title>
               <Scroll>
-                { utterance && 
+                { utterance && !cortanaText.subtitle ?
                   <Utterance>
                     { utterance }
-                  </Utterance>                
-                }
-                { chatData && chatData.message && 
+                  </Utterance>
+                  :
                   <Message>
-                    { chatData.message }
+                    { cortanaText.subtitle }
                   </Message>
                 }
-                { chatData && chatData.message &&
+                { chatData.message &&
                   <Actions>
                     <Action>Send</Action>
                     <Action>Cancel</Action>
@@ -280,6 +262,7 @@ const Title = styled.div`
   max-height: 100px;
   padding: 24px 20px 24px 20px;
   font-weight: bold;
+  text-align: center;
 
   &.fullPanel {
     font-size: 28px;

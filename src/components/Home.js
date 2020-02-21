@@ -8,7 +8,7 @@ import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
 
 const Home = ({ os }) => {
-  let { showTeamsChat, chatData, initSensor, showSettings, fullAttentionMode } = useContext(GlobalContext)
+  let { showTeamsChat, chatData, initSensor, showSettings, cortanaText, selectedModel, showCortanaPanel } = useContext(GlobalContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
   function getMedia(constraints) {
@@ -65,10 +65,16 @@ const Home = ({ os }) => {
         showPermission &&
           renderPermission()
       }
-      <Settings showSettings={ showSettings } />
+      <Settings 
+        showSettings={ showSettings } />
       { showTeamsChat && chatData && 
-        <TeamsChat chatData={ chatData } />}
-      <CortanaPanel />
+        <TeamsChat 
+          chatData={ chatData } />}
+      <CortanaPanel
+        showCortanaPanel={ showCortanaPanel }
+        cortanaText={ cortanaText }
+        selectedModel={ selectedModel }
+        chatData={ chatData } />
       <TeamsHome />
     </Container>
   )

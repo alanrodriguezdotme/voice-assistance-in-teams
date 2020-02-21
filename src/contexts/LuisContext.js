@@ -10,7 +10,7 @@ export const LuisContext = createContext()
 const speech = new Speech()
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, fullAttentionMode } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, fullAttentionMode, setCortanaText } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
 
 	const resetLuis = () => {        
@@ -36,6 +36,8 @@ const LuisContextProvider = (props) => {
 		}
 		let firstName = splitString[0]
 		let lastName = splitString[1]
+
+		if (!lastName) { lastName = 'Jamil' }
 
 		console.log('getName: ', firstName, lastName)
 
@@ -116,14 +118,21 @@ const LuisContextProvider = (props) => {
 								case 'triggerMessageSkill':
 									console.log(newChatData)
 									setChatData(newChatData)
+									let fullName = newChatData.firstName + ' ' + newChatData.lastName
 
-									// if (fullAttentionMode) {
-									// 	resetCortana()
-									// 	setShowTeamsChat(true)
-									// 	break
-									// } else {
-										
-									// }
+									if (newChatData.message) {
+										setCortanaText({
+											title: fullName,
+											subtitle: newChatData.message
+										})
+									} else {
+										setCortanaText({
+											title: "What's your message for " + fullName + "?",
+											subtitle: null
+										})
+
+									}
+
 									break
 
 								default:
