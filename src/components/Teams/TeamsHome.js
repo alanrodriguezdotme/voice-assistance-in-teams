@@ -39,5 +39,6 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
+  transition: height 350ms cubic-bezier(.1, .69, .38, .9);
 `
 

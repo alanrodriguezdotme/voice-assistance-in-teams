@@ -5,7 +5,7 @@ import { GlobalContext } from '../contexts/GlobalContext'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 import Home from './Home'
 
-const Wrapper = () => {
+const Wrapper = ({ tts }) => {
 	let { initStt } = useContext(SpeechToTextContext)
 	let { orientation } = useContext(GlobalContext)
 	
@@ -30,7 +30,10 @@ const Wrapper = () => {
 
 	return (
 		<Container>
-			<Home orientation={ orientation } os={ getMobileOperatingSystem() } />
+			<Home
+				tts={ tts } 
+				orientation={ orientation } 
+				os={ getMobileOperatingSystem() } />
 		</Container>
 	);
 }

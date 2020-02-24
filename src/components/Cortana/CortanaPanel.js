@@ -5,9 +5,7 @@ import SpeechRecognition from 'react-speech-recognition'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
-import TextToSpeech from '../../contexts/TextToSpeech'
 import VoiceMeter from './VoiceMeter'
-import AdaptiveCard from './AdaptiveCard'
 import CortanaAvatar from './CortanaAvatar'
 import { LuisContext } from '../../contexts/LuisContext'
 
@@ -16,15 +14,14 @@ const options = {
   continuous: false
 }
 
-const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }) => {
-  let { setShowCortanaPanel, utterance, sttState, luisResponse, resetCortana, setCortanaText, setShowTeamsChat } = useContext(GlobalContext)
-  let { getLuisRsesponse } = useContext(LuisContext)
+const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, playTts, isMicOn, tts, luisResponse }) => {
+  let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat } = useContext(GlobalContext)
+  let { getLuisResponse } = useContext(LuisContext)
   let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   // let [ showFullPanel, setShowFullPanel ] = useState(true)
   let [ showFullPanel, setShowFullPanel ] = useState(luisResponse && selectedModel === 'distracted')
-  let tts = new TextToSpeech(process.env.ACCESS_TOKEN)
 
   // handle timing of transitions
   useEffect(() => {
@@ -51,6 +48,25 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
     }
   }, [showCortanaPanel, selectedModel])
 
+  function speak() {
+    if (luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
+      if (chatData.message) {
+        setCortanaText({ title: "Do you want to send it?" })
+        tts.speak("Do you want to send it?", () => {
+          handleMicClick({ getLuisResponse })
+        })
+      } else if (chatData.firstName) {
+        tts.speak("What's your message for " + chatData.firstName + "?", () => {
+          handleMicClick({ getLuisResponse }, true)
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    console.log(sttState)
+  }, [sttState])
+
   useEffect(() => {
     if (showCortanaPanel) {
       if (selectedModel === 'distracted') {
@@ -59,16 +75,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
         } else {
           setShowFullPanel(false)
         }
-
-        if (chatData.message) {          
-          tts.speak("Do you want to send it?", () => {
-            handleMicClick({getLuisRsesponse})
-          })
-        } else if (chatData.firstName) {          
-          tts.speak("What's your message for " + chatData.firstName + "?", () => {
-            handleMicClick({getLuisRsesponse})
-          })
-        }
+        if (playTts) { speak() }
       } else {
         setShowFullPanel(false)
       }
@@ -82,6 +89,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
         if (chatData.firstName) {
           setShowTeamsChat(true)
         }
+        if (playTts) { speak() }
       }
     }
   }, [luisResponse, selectedModel, chatData, showCortanaPanel])
@@ -121,10 +129,18 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
     'hybrid': selectedModel === 'hybrid'
   })
 
+  let controlsClasses = classNames({
+    'hybrid': selectedModel === 'hybrid'
+  })
+
+  let mainClasses = classNames({
+    'hybrid': selectedModel === 'hybrid'
+  })
+
   return (
     <Container className={ containerClasses }
       selectedModel={ selectedModel }>
-      { selectedModel === 'hybrid' && 
+      { selectedModel === 'hybrid' || selectedModel === 'distracted' &&
         <Overlay className={ overlayClasses }
           onClick={ () => handleOverlayClick() } />
       }
@@ -166,10 +182,10 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel }
             </Content>
         }
         { !showFullPanel &&
-            <Main>{ renderCortini() }</Main>
+            <Main className={ mainClasses }>{ renderCortini() }</Main>
         }
-        <Controls>
-          { sttState ?
+        <Controls className={ controlsClasses }>
+          { isMicOn ?
             <VoiceMeter sttState={ sttState } color="#6B6BA0" />
             :
             <Microphone onClick={ () => handleMicClick({ getLuisRsesponse }) }>
@@ -258,8 +274,8 @@ const Panel = styled.div`
   &.hybrid {
     border-radius: 0;
     height: 100%;
-    transition: none;
-    box-shadow: inset 0px 2px 4px 0px rgba(0, 0, 0, 0.05);
+    /* transition: none; */
+    box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   }
 
   .tab {
@@ -329,6 +345,7 @@ const Actions = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 20px;
 `
 
 const Action = styled.div`
@@ -359,6 +376,10 @@ const Main = styled.div`
   font-size: 17px;
   letter-spacing: -0.41px;
   line-height: 22px;
+
+  &.hybrid {
+    height: 80px;
+  }
 `
 
 const CortanaText = styled.div`
@@ -376,6 +397,11 @@ const Controls = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 72px;
+  height: 72px;
+
+  &.hybrid {
+    margin-bottom: 0;
+  }
 `
 
 const Microphone = styled.div`

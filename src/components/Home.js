@@ -9,8 +9,8 @@ import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 
-const Home = ({ os }) => {
-  let { showTeamsChat, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel } = useContext(GlobalContext)
+const Home = ({ os, tts }) => {
+  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
@@ -51,14 +51,21 @@ const Home = ({ os }) => {
       <Permission>
         <div className="main">
           This prototype requires the use of your device's sensors.
-          
+
         </div>
         <div className="button"
           onClick={ () => handlePermissionClick() }>
           Request permission
         </div>
-      </Permission> 
+      </Permission>
     )
+  }
+
+  function handleTeamsWrapperClick() {
+    if (selectedModel === 'hybrid' && showCortanaPanel) {
+      resetCortana()
+      recognizerStop()
+    }
   }
 
   let teamsWrapperClasses = classNames({
@@ -69,19 +76,21 @@ const Home = ({ os }) => {
   return (
     <Container
       selectedModel={ selectedModel }>
-      { 
-        os === 'iOS' && 
+      {
+        os === 'iOS' &&
         showPermission &&
           renderPermission()
       }
-      <Settings 
+      <Settings
         showSettings={ showSettings } />
-      <TeamsWrapper classNames={ teamsWrapperClasses }>
+      <TeamsWrapper classNames={ teamsWrapperClasses }
+        onClick={ () => handleTeamsWrapperClick() }>
         { showTeamsChat ?
-          <TeamsChat 
+          <TeamsChat
+            shouldSendMessage={ shouldSendMessage }
             actions={{ resetCortana, recognizerStop }}
             chatData={ chatData }
-            selectedModel={ selectedModel } /> 
+            selectedModel={ selectedModel } />
           :
           <TeamsHome
             actions={{ resetCortana, recognizerStop }}
@@ -90,10 +99,14 @@ const Home = ({ os }) => {
         }
       </TeamsWrapper>
       <CortanaPanel
+        luisResponse={ luisResponse }
+        tts={ tts }
         showCortanaPanel={ showCortanaPanel }
         cortanaText={ cortanaText }
         selectedModel={ selectedModel }
-        chatData={ chatData } />
+        chatData={ chatData }
+        playTts={ playTts}
+        isMicOn={ isMicOn } />
     </Container>
   )
 }
@@ -118,10 +131,8 @@ const TeamsWrapper = styled.div`
   flex: 1;
   transition: height 350ms cubic-bezier(.1, .69, .38, .9);
 
-  &.hybrid {
-    &.showCortanaPanel {
-      height: calc(100% - 200px);
-    }
+  &.hybrid, &.showCortanaPanel {
+    height: calc(100% - 200px);
   }
 `
 
@@ -140,7 +151,7 @@ const Permission = styled.div`
   .main {
     padding: 12px 20px;
     margin-bottom: 12px;
-    max-width: 400px; 
+    max-width: 400px;
     text-align: center;
     font-size: 18px;
   }

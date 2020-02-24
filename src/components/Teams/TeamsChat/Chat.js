@@ -30,7 +30,7 @@ const Chat = ({ content, firstName, lastName = 'Jamil' }) => {
         )
       } else {
         return (
-          <Row className="fromUser" key={ 'message' + index }>
+          <Row className={ isFromLastPerson ? "fromUser" : "fromUser moreSpaceOnTop" } key={ 'message' + index }>
             <Message className="fromUser">
               { message.message }
             </Message>

@@ -33,6 +33,8 @@ const GlobalContextProvider = (props) => {
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
 	let [ selectedModel, setSelectedModel ] = useState('hybrid')
 	let [ playTts, setPlayTts ] = useState(true)
+	let [ isMicOn, setIsMicOn ] = useState(false)
+	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
 
 	const resetCortana = () => {
 		setSttState(null)
@@ -91,6 +93,17 @@ const GlobalContextProvider = (props) => {
 		}
 	}, [])
 
+	useEffect(() => {
+		if (
+			sttState === null ||
+			sttState === 'RecognitionEndedEvent' ||
+			sttState === 'SpeechDetailedPhraseEvent') {
+			setIsMicOn(false)
+		} else {
+			setIsMicOn(true)
+		}
+	}, [ sttState ])
+
 	return (
 		<GlobalContext.Provider value={{
 			avatarState, setAvatarState,
@@ -108,6 +121,8 @@ const GlobalContextProvider = (props) => {
 			fullAttentionMode, setFullAttentionMode,
 			selectedModel, setSelectedModel,
 			playTts, setPlayTts,
+			shouldSendMessage, setShouldSendMessage,
+			isMicOn,
 			resetCortana,
 			orientation,
 			initSensor,

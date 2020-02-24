@@ -11,15 +11,22 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData, selectedModel }) => {
+const TeamsChat = ({ chatData, selectedModel, shouldSendMessage }) => {
   let { firstName, message } = chatData
   let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
+  let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
   let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
 
   useEffect(() => {
     chatInputRef.current.focus()
   }, [])
+
+  useEffect(() => {
+    if (message) { setInputValue(message) }
+    if (firstName) { setFirstNameValue(firstName) }
+    if (shouldSendMessage && inputValue.length > 0) { handleSendClick() }
+  }, [firstName, message, shouldSendMessage])
 
   const onKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -65,7 +72,7 @@ const TeamsChat = ({ chatData, selectedModel }) => {
         </div>
         <div className="middle">
           <div className="name">
-            { firstName + ' ' + 'Jamil' }
+            { firstNameValue + ' ' + 'Jamil' }
           </div>
           <div className="status">
             <span className="dot"></span>
@@ -78,7 +85,7 @@ const TeamsChat = ({ chatData, selectedModel }) => {
         </div>
       </Header>
       <Chat 
-        firstName={ firstName }
+        firstName={ firstNameValue }
         content={{ messages: chatMessages }} />
       <Footer>
         <div className="left">

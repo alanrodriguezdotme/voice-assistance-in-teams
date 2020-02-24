@@ -10,8 +10,9 @@ export const LuisContext = createContext()
 const speech = new Speech()
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, fullAttentionMode, setCortanaText } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
+	let { tts } = props
 
 	const resetLuis = () => {        
 	//completely reset the demo
@@ -87,9 +88,23 @@ const LuisContextProvider = (props) => {
 
 						//check and see if we confidently know the intent, otherwise it is freeform text.
 						if (score > .6) {
+							console.log('intent: ' + intent)
 							switch(intent) {
 								case 'callPerson':
-									console.log('intent: callPerson')
+									break
+
+								case 'confirm':
+									if (chatData.message) {
+										setCortanaText({ title: 'Sending...' })	
+										setTimeout(() => {
+											setShouldSendMessage(true)
+											setCortanaText({ title: 'Message sent' })										
+											tts.speak("Message sent", () => {
+												resetCortana()
+												recognizerStop()
+											})
+										}, 2000)
+									}
 									break
 								
 								case 'triggerMessageSkill':

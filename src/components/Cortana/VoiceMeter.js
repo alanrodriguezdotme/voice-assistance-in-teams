@@ -128,8 +128,10 @@ const VoiceMeter = ({ sttState, color = '#333' }) => {
 	}
 
 	return (
-		<Container color={ color }>
-			{ renderSpeechAnimation() }
+		<Container>
+			<Wrapper color={ color }>
+				{ renderSpeechAnimation() }
+			</Wrapper>
 		</Container>
 	)
 }
@@ -179,14 +181,21 @@ const changeHeightXL = keyframes`
 `
 
 const Container = styled.div`
-	margin-top: 20px;
+	position: relative;
+	min-height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 200;
+`
+
+const Wrapper = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 40px;
 	position: absolute;
 	margin: 0 auto;
-	z-index: 200;
 
 	.speechAnimation-node {
 			width: 2px;

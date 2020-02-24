@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
+import styled from 'styled-components'
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css'
-import styled from 'styled-components'
 import Toggle from 'react-toggle'
+import "react-toggle/style.css"
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 
@@ -38,8 +39,7 @@ const Settings = ({ showSettings }) => {
   }
 
   function handleTtsChange(event) {
-    console.log(event.target.checked)
-    setPlayTts(!event.target.checked)
+    setPlayTts(event.target.checked)
   }
 
   return (
@@ -53,7 +53,10 @@ const Settings = ({ showSettings }) => {
             value={ selectedModel } />
         </Control>
         <Control>
-          <Label>TTS (hybrid and distracted)</Label>
+          <Label>
+            TTS
+            <div className="caption">(hybrid and distracted)</div>
+          </Label>
           <Toggle
             checked={ playTts }
             defaultChecked={ playTts }
@@ -118,7 +121,8 @@ const Panel = styled.div`
   transform: translateX(100%);
   transition: transform 250ms cubic-bezier(.1, .69, .38, .9);
   z-index: 10;
-  background: #111;
+  background: white;
+  color: black;
 
   &.showPanel {
     transform: translateX(0);
@@ -128,16 +132,19 @@ const Panel = styled.div`
 const Control = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 8px 12px;
+  min-height: 60px;
 `
 
 const Label = styled.div`
   flex: 1;
-  color: white;
+
+  .caption {
+    font-size: 12px;
+  }
 `
 
 const Orientation = styled.div`
-  color: white;
   bottom: 20px;
   padding: 8px;
   font-size: 10px;
