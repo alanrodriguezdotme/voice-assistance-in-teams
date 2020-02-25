@@ -93,6 +93,10 @@ const LuisContextProvider = (props) => {
 								case 'callPerson':
 									break
 
+								case 'decline':
+									resetCortana(true)
+									break
+
 								case 'confirm':
 									if (chatData.message) {
 										setCortanaText({ title: 'Sending...' })
