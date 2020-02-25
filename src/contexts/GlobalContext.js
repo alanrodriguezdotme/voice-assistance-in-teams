@@ -44,6 +44,7 @@ const GlobalContextProvider = (props) => {
 		setShowCortanaPanel(false)
 		setCortanaText(defaultCortanaText)
 		setChatData(defaultChatData)
+		setChatMessages(TeamsChatData)
 	}
 
 	function getMobileOperatingSystem() {

@@ -51,7 +51,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
   function speak() {
     if (luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
       if (chatData.message) {
-        setCortanaText({ title: "Do you want to send it?" })
+        setCortanaText({ title: "Do you want to send it?", subtitle: chatData.message })
         tts.speak("Do you want to send it?", () => {
           handleMicClick({ getLuisResponse })
         })
@@ -91,7 +91,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
           if (!chatData.message && !playTts) {
             handleMicClick({ getLuisResponse }, true)
           } else if (chatData.message && !playTts && luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
-            setCortanaText({ title: 'Do you want to send it?' })
+            setCortanaText({ title: 'Do you want to send it?', subtitle: chatData.message  })
             handleMicClick({ getLuisResponse })
           }
         }
@@ -402,7 +402,7 @@ const Controls = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 72px;
+  margin-bottom: 48px;
   height: 72px;
 
   &.hybrid {
