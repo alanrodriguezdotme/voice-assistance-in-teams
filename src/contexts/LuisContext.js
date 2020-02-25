@@ -10,17 +10,17 @@ export const LuisContext = createContext()
 const speech = new Speech()
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData, playTts } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
 	let { tts } = props
 
-	const resetLuis = () => {        
+	const resetLuis = () => {
 	//completely reset the demo
 	  recognizerStop()
 	  initStt()
 	}
 
-	const finishFlow = () => {        
+	const finishFlow = () => {
 		var audio = new Audio('assets/earcons/earconSuccess.wav');
 		setTimeout(() => {
 			audio.play();
@@ -49,7 +49,7 @@ const LuisContextProvider = (props) => {
 		// Alan's LUIS account
 		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
 		let scrubbedUtterance = utterance[0] == '"' ? utterance.substring(1, utterance.length - 1).toLowerCase() : utterance.toLowerCase() // remove quotes from utterance
-		
+
 		return new Promise((resolve, reject) => {
 			fetch(LUIS_URL + scrubbedUtterance)
 				.then((response) => {
@@ -59,7 +59,7 @@ const LuisContextProvider = (props) => {
 					setLuisResponse(data)
 					let { intent, score } = data.intents[0]
 					let { entities } = data
-					
+
 					if (intent) {
 						console.log('intent: ', intent)
 						console.log(data)
@@ -68,11 +68,11 @@ const LuisContextProvider = (props) => {
 						let newChatData = null
 
 						if (entities.length > 0) {
-							let personNameObject = _.findWhere(entities, { 
-								type: 'builtin.personName' 
+							let personNameObject = _.findWhere(entities, {
+								type: 'builtin.personName'
 							})
-							let messageObject = _.findWhere(entities, { 
-								type: 'message' 
+							let messageObject = _.findWhere(entities, {
+								type: 'message'
 							})
 
 							if (personNameObject) {
@@ -95,18 +95,25 @@ const LuisContextProvider = (props) => {
 
 								case 'confirm':
 									if (chatData.message) {
-										setCortanaText({ title: 'Sending...' })	
+										setCortanaText({ title: 'Sending...' })
 										setTimeout(() => {
 											setShouldSendMessage(true)
-											setCortanaText({ title: 'Message sent' })										
-											tts.speak("Message sent", () => {
-												resetCortana()
-												recognizerStop()
-											})
+											setCortanaText({ title: 'Message sent' })
+											if (playTts) {
+												tts.speak("Message sent", () => {
+													resetCortana()
+													recognizerStop()
+												})
+											} else {
+												setTimeout(() => {
+													resetCortana()
+													recognizerStop()
+												}, 2000)
+											}
 										}, 2000)
 									}
 									break
-								
+
 								case 'triggerMessageSkill':
 									console.log(newChatData)
 									setChatData(newChatData)
@@ -147,7 +154,7 @@ const LuisContextProvider = (props) => {
 	const setProfile = (utterance, type, skill, actions) => {
 		console.log('setProfile:', utterance)
 		//set the corresponding profile depending on phrase spoken
-		if (utterance.includes('smith') || utterance.includes('first')) {		
+		if (utterance.includes('smith') || utterance.includes('first')) {
 			actions.setAdaptiveCardContent({
 				type, skill,
 				firstName: cardContent.firstName,
@@ -156,7 +163,7 @@ const LuisContextProvider = (props) => {
 				message: null
 			})
 		}
-		else if (utterance.includes('jones') || utterance.includes('second') || utterance.includes('middle')) {	
+		else if (utterance.includes('jones') || utterance.includes('second') || utterance.includes('middle')) {
 			actions.setAdaptiveCardContent({
 				type, skill,
 				firstName: cardContent.firstName,
@@ -165,7 +172,7 @@ const LuisContextProvider = (props) => {
 				message: null
 			})
 		}
-		else if (utterance.includes('johnson') || utterance.includes('third') || utterance.includes('last')) {	
+		else if (utterance.includes('johnson') || utterance.includes('third') || utterance.includes('last')) {
 			actions.setAdaptiveCardContent({
 				type, skill,
 				firstName: cardContent.firstName,
@@ -174,7 +181,7 @@ const LuisContextProvider = (props) => {
 				message: null
 			})
 		}
-		else {	
+		else {
 			actions.setAdaptiveCardContent({
 				type, skill,
 				firstName: cardContent.firstName,

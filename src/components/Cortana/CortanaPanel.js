@@ -88,6 +88,12 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
       if (selectedModel === 'hybrid') {
         if (chatData.firstName) {
           setShowTeamsChat(true)
+          if (!chatData.message && !playTts) {
+            handleMicClick({ getLuisResponse }, true)
+          } else if (chatData.message && !playTts && luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
+            setCortanaText({ title: 'Do you want to send it?' })
+            handleMicClick({ getLuisResponse })
+          }
         }
         if (playTts) { speak() }
       }
@@ -188,7 +194,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
           { isMicOn ?
             <VoiceMeter sttState={ sttState } color="#6B6BA0" />
             :
-            <Microphone onClick={ () => handleMicClick({ getLuisRsesponse }) }>
+            <Microphone onClick={ () => handleMicClick({ getLuisResponse }) }>
               <i className="icon-teams-regular icon-teams-Microphone" />
             </Microphone>
           }
