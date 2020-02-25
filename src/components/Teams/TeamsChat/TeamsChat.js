@@ -59,7 +59,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage }) => {
   }
 
   const handleBackClick = () => {
-    resetCortana()
+    resetCortana(true)
     setShowTeamsChat(false)
   }
 

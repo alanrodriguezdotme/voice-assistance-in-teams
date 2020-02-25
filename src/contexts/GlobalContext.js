@@ -36,7 +36,7 @@ const GlobalContextProvider = (props) => {
 	let [ isMicOn, setIsMicOn ] = useState(false)
 	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
 
-	const resetCortana = () => {
+	const resetCortana = (resetChatMessages) => {
 		setSttState(null)
 		setUtterance(null)
 		setAvatarState('calm')
@@ -44,7 +44,7 @@ const GlobalContextProvider = (props) => {
 		setShowCortanaPanel(false)
 		setCortanaText(defaultCortanaText)
 		setChatData(defaultChatData)
-		setChatMessages(TeamsChatData)
+		if (resetChatMessages) { setChatMessages(TeamsChatData) }
 	}
 
 	function getMobileOperatingSystem() {

@@ -63,7 +63,7 @@ const Home = ({ os, tts }) => {
 
   function handleTeamsWrapperClick() {
     if (selectedModel === 'hybrid' && showCortanaPanel) {
-      resetCortana()
+      resetCortana(false)
       recognizerStop()
     }
   }
