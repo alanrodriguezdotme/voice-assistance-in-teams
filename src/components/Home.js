@@ -114,8 +114,8 @@ const Home = ({ os, tts }) => {
 export default Home
 
 const Container = styled.div`
-  max-width: 375px;
-  max-height: 812px;
+  max-width: 411px;
+  max-height: 846px;
   width: 100%;
   height: 100%;
   background: white;
@@ -123,6 +123,11 @@ const Container = styled.div`
   overflow: hidden;
   display: ${ p => p.selectedModel === 'hybrid' ? 'flex' : 'block' };
   flex-direction: column;
+
+  @media (max-width: 500px) {
+    max-width: 100%;
+    max-height: 100%;
+  }
 `
 
 const TeamsWrapper = styled.div`

@@ -45,23 +45,31 @@ const Settings = ({ showSettings }) => {
   return (
     <Container className={ showContainer ? 'showSettings' : '' }>
       <Panel className={ showPanel ? 'showPanel' : '' }>
-        <Control>
-          <Label>Select a model</Label>
-          <Dropdown
-            options={ modelOptions }
-            onChange={ (option) => handleModelChange(option) }
-            value={ selectedModel } />
-        </Control>
-        <Control>
-          <Label>
-            TTS
-            <div className="caption">(hybrid and distracted)</div>
-          </Label>
-          <Toggle
-            checked={ playTts }
-            defaultChecked={ playTts }
-            onChange={ (event) => handleTtsChange(event) } />
-        </Control>
+        <Header>
+          <h1>Prototype Settings</h1>
+          <CloseButton onClick={ () => setShowSettings(false) }>
+            <i className="icon-teams icon-teams-Cancel" />
+          </CloseButton>
+        </Header>
+        <Controls>
+          <Control>
+            <Label>Select a model</Label>
+            <Dropdown
+              options={ modelOptions }
+              onChange={ (option) => handleModelChange(option) }
+              value={ selectedModel } />
+          </Control>
+          <Control>
+            <Label>
+              TTS
+              <div className="caption">(hybrid and distracted)</div>
+            </Label>
+            <Toggle
+              checked={ playTts }
+              defaultChecked={ playTts }
+              onChange={ (event) => handleTtsChange(event) } />
+          </Control>
+        </Controls>
         { orientation &&
           <Orientation>
             gamma: { orientation.gamma }<br />
@@ -123,10 +131,41 @@ const Panel = styled.div`
   z-index: 10;
   background: white;
   color: black;
+  display: flex;
+  flex-direction: column;
 
   &.showPanel {
     transform: translateX(0);
   }
+`
+
+const Header = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+
+  h1 {
+    font-size: 24px;
+    flex: 1;
+    padding-left: 12px;
+  }
+`
+
+const CloseButton = styled.div`
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Controls = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `
 
 const Control = styled.div`
@@ -146,6 +185,6 @@ const Label = styled.div`
 
 const Orientation = styled.div`
   bottom: 20px;
-  padding: 8px;
+  padding: 8px 12px 20px 12px;
   font-size: 10px;
 `

@@ -19,8 +19,10 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage }) => {
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
 
   useEffect(() => {
-    chatInputRef.current.focus()
-  }, [])
+    if (selectedModel === 'full attention') {
+      chatInputRef.current.focus()
+    }
+  }, [selectedModel])
 
   useEffect(() => {
     if (message) { setInputValue(message) }
