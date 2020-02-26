@@ -35,6 +35,7 @@ const GlobalContextProvider = (props) => {
 	let [ playTts, setPlayTts ] = useState(true)
 	let [ isMicOn, setIsMicOn ] = useState(false)
 	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
+	let [ shouldDisambig, setShouldDisambig ] = useState(true)
 
 	const resetCortana = (resetChatMessages) => {
 		setSttState(null)
@@ -123,6 +124,7 @@ const GlobalContextProvider = (props) => {
 			selectedModel, setSelectedModel,
 			playTts, setPlayTts,
 			shouldSendMessage, setShouldSendMessage,
+			shouldDisambig, setShouldDisambig,
 			isMicOn,
 			resetCortana,
 			orientation,
