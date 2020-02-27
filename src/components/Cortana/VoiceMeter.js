@@ -46,38 +46,38 @@ const VoiceMeter = ({ sttState, color = '#333' }) => {
 				size: "s",
 				delay: 1
 			},
-			{
-				size: "xs",
-				delay: 2.2
-			},
-			{
-				size: "s",
-				delay: .8
-			},
-			{
-				size: "m",
-				delay: 1.4
-			},
-			{
-				size: "l",
-				delay: 2.6
-			},
-			{
-				size: "xl",
-				delay: .2
-			},
-			{
-				size: "l",
-				delay: .7
-			},
-			{
-				size: "m",
-				delay: .4
-			},
-			{
-				size: "s",
-				delay: 2.3
-			},
+			// {
+			// 	size: "xs",
+			// 	delay: 2.2
+			// },
+			// {
+			// 	size: "s",
+			// 	delay: .8
+			// },
+			// {
+			// 	size: "m",
+			// 	delay: 1.4
+			// },
+			// {
+			// 	size: "l",
+			// 	delay: 2.6
+			// },
+			// {
+			// 	size: "xl",
+			// 	delay: .2
+			// },
+			// {
+			// 	size: "l",
+			// 	delay: .7
+			// },
+			// {
+			// 	size: "m",
+			// 	delay: .4
+			// },
+			// {
+			// 	size: "s",
+			// 	delay: 2.3
+			// },
 			{
 				size: "xs",
 				delay: 1.5
@@ -198,9 +198,9 @@ const Wrapper = styled.div`
 	margin: 0 auto;
 
 	.speechAnimation-node {
-			width: 2px;
+			width: 3px;
 			background: ${ p => p.color };
-			border-radius: 1px;
+			border-radius: 2px;
 			margin: 0 2px;
 			transition: transform 150ms ease-in-out, height 150ms cubic-bezier(.1, .69, .38, .9);
 			height: 0;

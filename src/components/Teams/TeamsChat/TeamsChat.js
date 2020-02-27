@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import styled from 'styled-components'
+import classNames from 'classnames'
 
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import Chat from './Chat'
@@ -11,7 +12,7 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData, selectedModel, shouldSendMessage }) => {
+const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel }) => {
   let { firstName, message } = chatData
   let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
   let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
@@ -63,9 +64,13 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage }) => {
     setShowTeamsChat(false)
   }
 
+  let teamsChatClasses = classNames({
+    'showCortanaPanel': showCortanaPanel
+  })
+
   return (
     <Container
-      className={ selectedModel }>
+      className={ selectedModel + ' ' + teamsChatClasses }>
       <Header>
         <div className="left">
           <i className="icon-teams icon-teams-Back"
@@ -125,6 +130,12 @@ const Container = styled.div`
   left: 0;
   z-index: 1001;
   overflow: hidden;
+
+  &.hybrid {
+    &.showCortanaPanel {
+      height: calc(100% - 200px);
+    } 
+  } 
 `
 
 const Header = styled.div`

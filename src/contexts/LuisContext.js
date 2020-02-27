@@ -45,6 +45,25 @@ const LuisContextProvider = (props) => {
 		return { firstName, lastName }
 	}
 
+	const sendMessage = () => {		
+		setCortanaText({ title: 'Sending...' })
+		setTimeout(() => {
+			setShouldSendMessage(true)
+			setCortanaText({ title: "I've sent this." })
+			if (playTts) {
+				tts.speak("Sent", () => {
+					resetCortana()
+					recognizerStop()
+				})
+			} else {
+				setTimeout(() => {
+					resetCortana()
+					recognizerStop()
+				}, 2000)
+			}
+		}, 2000)
+	}
+
 	const getLuisResponse = (utterance, actions) => {
 		// Alan's LUIS account
 		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
@@ -99,22 +118,7 @@ const LuisContextProvider = (props) => {
 
 								case 'confirm':
 									if (chatData.message) {
-										setCortanaText({ title: 'Sending...' })
-										setTimeout(() => {
-											setShouldSendMessage(true)
-											setCortanaText({ title: 'Message sent' })
-											if (playTts) {
-												tts.speak("Message sent", () => {
-													resetCortana()
-													recognizerStop()
-												})
-											} else {
-												setTimeout(() => {
-													resetCortana()
-													recognizerStop()
-												}, 2000)
-											}
-										}, 2000)
+										sendMessage()
 									}
 									break
 
@@ -130,7 +134,7 @@ const LuisContextProvider = (props) => {
 										})
 									} else {
 										setCortanaText({
-											title: "What's your message for " + fullName + "?",
+											title: "What's your message?",
 											subtitle: null
 										})
 									}
@@ -198,7 +202,7 @@ const LuisContextProvider = (props) => {
 	}
 
 	return (
-		<LuisContext.Provider value={{ getLuisResponse, resetLuis }}>
+		<LuisContext.Provider value={{ getLuisResponse, resetLuis, sendMessage }}>
 			{ props.children }
 		</LuisContext.Provider>
 	)

@@ -16,7 +16,7 @@ const options = {
 
 const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, playTts, isMicOn, tts, luisResponse }) => {
   let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat } = useContext(GlobalContext)
-  let { getLuisResponse } = useContext(LuisContext)
+  let { getLuisResponse, sendMessage } = useContext(LuisContext)
   let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
@@ -115,14 +115,17 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
         </Utterance>
       )
     } else {
-      return cortanaText.title
+      return (
+        <Title>
+          { cortanaText.title }
+        </Title> 
+      )
     }
   }
 
   let panelClasses = classNames({
     'showPanel': showPanel,
-    'fullPanel': showFullPanel,
-    'hybrid': selectedModel === 'hybrid'
+    'fullPanel': showFullPanel
   })
 
   let overlayClasses = classNames({
@@ -143,6 +146,10 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
     'hybrid': selectedModel === 'hybrid'
   })
 
+  let microphoneClasses = classNames({
+    'small': !showFullPanel
+  })
+
   return (
     <Container className={ containerClasses }
       selectedModel={ selectedModel }>
@@ -150,8 +157,12 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
         <Overlay className={ overlayClasses }
           onClick={ () => handleOverlayClick() } />
       }
-      <Panel className={ panelClasses }>
-        <div className="tab"></div>
+      <Panel className={ selectedModel + ' ' + panelClasses }>
+        <div className="tab">
+          { !showFullPanel &&
+            <div className="handle" />
+          }
+        </div>
         { showFullPanel &&
           <Top>
             <Button onClick={ () => handleOverlayClick() }>
@@ -181,8 +192,8 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
                 }
                 { chatData.message &&
                   <Actions>
-                    <Action>Send</Action>
-                    <Action>Cancel</Action>
+                    <Action onClick={ () => sendMessage() }>Send</Action>
+                    <Action onClick={ () => resetCortana() }>Cancel</Action>
                   </Actions> }
               </Scroll>
             </Content>
@@ -194,8 +205,9 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
           { isMicOn ?
             <VoiceMeter sttState={ sttState } color="#6B6BA0" />
             :
-            <Microphone onClick={ () => handleMicClick({ getLuisResponse }) }>
-              <i className="icon-teams-regular icon-teams-Microphone" />
+            <Microphone className={ microphoneClasses }
+              onClick={ () => handleMicClick({ getLuisResponse }) }>
+              <i className={ "icon-teams" + (showFullPanel ? "-regular " : " ") + "icon-teams-Microphone" } />
             </Microphone>
           }
         </Controls>
@@ -210,19 +222,22 @@ const Container = styled.div`
   position: absolute;
   width: 100%;
   height: 0;
-  top: 100%;
+  bottom: 100%;
   left: 0;
   opacity: 0;
   z-index: 1000;
+  visibility: hidden;
 
   &.showOverlay {
+    visibility: visible;
     height: 100%;
     opacity: 1;
-    top: 0;
+    bottom: 0;
   }
 
   &.hybrid {
-    position: relative;
+    bottom: 0;
+    /* position: relative; */
 
     &.showOverlay {
       height: 200px;
@@ -262,7 +277,7 @@ const Panel = styled.div`
   border-radius: 14px 14px 0 0;
   transform: translateY(0);
   transition: transform 250ms cubic-bezier(.1, .69, .38, .9), height 250ms cubic-bezier(.1, .69, .38, .9);
-  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.2);
 
   &.showPanel {
     transform: translateY(-200px);
@@ -278,14 +293,23 @@ const Panel = styled.div`
   }
 
   &.hybrid {
-    border-radius: 0;
+    /* border-radius: 0; */
     height: 100%;
     /* transition: none; */
-    box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.1);
   }
 
   .tab {
     height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .handle {
+      width: 40px;
+      height: 5px;
+      border-radius: 2.5px;
+      background: #ccc;
+    }
   }
 `
 
@@ -345,6 +369,7 @@ const Message = styled.div`
   font-size: 22px;
   letter-spacing: 0.35px;
   line-height: 28px;
+  color: #333;
 `
 
 const Actions = styled.div`
@@ -382,9 +407,10 @@ const Main = styled.div`
   font-size: 17px;
   letter-spacing: -0.41px;
   line-height: 22px;
+  flex: 1;
 
   &.hybrid {
-    height: 80px;
+    height: 100%;
   }
 `
 
@@ -406,7 +432,8 @@ const Controls = styled.div`
   height: 72px;
 
   &.hybrid {
-    margin-bottom: 0;
+    margin-bottom: 20px;
+    height: 50px;
   }
 `
 
@@ -420,4 +447,11 @@ const Microphone = styled.div`
   justify-content: center;
   font-size: 30px;
   color: #6264a7;
+  
+  &.small {
+    background: transparent;
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+  }
 `
