@@ -14,6 +14,11 @@ let defaultChatData = {
 	photo: 'profilePic3.png'
 }
 
+let emptyCortanaText = {
+	title: '',
+	subtitle: null
+}
+
 export const GlobalContext = createContext()
 
 const GlobalContextProvider = (props) => {
@@ -36,6 +41,7 @@ const GlobalContextProvider = (props) => {
 	let [ isMicOn, setIsMicOn ] = useState(false)
 	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
 	let [ shouldDisambig, setShouldDisambig ] = useState(true)
+	let [ showDisambig, setShowDisambig ] = useState(false)
 
 	const resetCortana = (resetChatMessages) => {
 		setSttState(null)
@@ -43,7 +49,7 @@ const GlobalContextProvider = (props) => {
 		setAvatarState('calm')
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
-		setCortanaText(defaultCortanaText)
+		setCortanaText(emptyCortanaText)
 		setChatData(defaultChatData)
 		if (resetChatMessages) { setChatMessages(TeamsChatData) }
 	}
@@ -106,6 +112,12 @@ const GlobalContextProvider = (props) => {
 		}
 	}, [ sttState ])
 
+	useEffect(() => {
+		if (showCortanaPanel) {
+			setCortanaText(defaultCortanaText)
+		}
+	}, [showCortanaPanel])
+
 	return (
 		<GlobalContext.Provider value={{
 			avatarState, setAvatarState,
@@ -125,6 +137,7 @@ const GlobalContextProvider = (props) => {
 			playTts, setPlayTts,
 			shouldSendMessage, setShouldSendMessage,
 			shouldDisambig, setShouldDisambig,
+			showDisambig, setShowDisambig,
 			isMicOn,
 			resetCortana,
 			orientation,

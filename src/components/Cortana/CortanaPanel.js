@@ -5,9 +5,10 @@ import SpeechRecognition from 'react-speech-recognition'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
 import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
-import VoiceMeter from './VoiceMeter'
-import CortanaAvatar from './CortanaAvatar'
 import { LuisContext } from '../../contexts/LuisContext'
+import VoiceMeter from './VoiceMeter'
+import CortanaPanelContent from './CortanaPanelContent'
+import CortanaPanelControls from './CortanaPanelControls'
 
 const options = {
   autoStart: false,
@@ -138,16 +139,8 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
     'hybrid': selectedModel === 'hybrid'
   })
 
-  let controlsClasses = classNames({
-    'hybrid': selectedModel === 'hybrid'
-  })
-
   let mainClasses = classNames({
     'hybrid': selectedModel === 'hybrid'
-  })
-
-  let microphoneClasses = classNames({
-    'small': !showFullPanel
   })
 
   return (
@@ -163,7 +156,8 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
             <div className="handle" />
           }
         </div>
-        { showFullPanel &&
+        
+        { showFullPanel && 
           <Top>
             <Button onClick={ () => handleOverlayClick() }>
               <i className="icon-teams-regular icon-teams-Cancel" />
@@ -171,46 +165,21 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
             <div className="spacer" />
           </Top>
         }
-        { showFullPanel &&
-            <Content>
-              <CortanaAvatar
-                image={ chatData.photo }
-                size={ 'large' }
-                state={ 'calm' } />
-              <Title className="fullPanel">
-                { cortanaText.title }
-              </Title>
-              <Scroll>
-                { utterance && !cortanaText.subtitle ?
-                  <Utterance>
-                    { utterance }
-                  </Utterance>
-                  :
-                  <Message>
-                    { cortanaText.subtitle }
-                  </Message>
-                }
-                { chatData.message &&
-                  <Actions>
-                    <Action onClick={ () => sendMessage() }>Send</Action>
-                    <Action onClick={ () => resetCortana() }>Cancel</Action>
-                  </Actions> }
-              </Scroll>
-            </Content>
+        { showFullPanel ?
+          <CortanaPanelContent
+            showFullPanel={ showFullPanel }
+            selectedModel={ selectedModel }
+            chatData={ chatData }
+            cortanaText={ cortanaText } />
+          :
+          <Main className={ mainClasses }>{ renderCortini() }</Main>
         }
-        { !showFullPanel &&
-            <Main className={ mainClasses }>{ renderCortini() }</Main>
-        }
-        <Controls className={ controlsClasses }>
-          { isMicOn ?
-            <VoiceMeter sttState={ sttState } color="#6B6BA0" />
-            :
-            <Microphone className={ microphoneClasses }
-              onClick={ () => handleMicClick({ getLuisResponse }) }>
-              <i className={ "icon-teams" + (showFullPanel ? "-regular " : " ") + "icon-teams-Microphone" } />
-            </Microphone>
-          }
-        </Controls>
+        <CortanaPanelControls
+          isMicOn={ isMicOn }
+          sttState={ sttState }
+          selectedModel={ selectedModel }
+          getLuisResponse={ getLuisResponse }
+          showFullPanel={ showFullPanel } />
       </Panel>
     </Container>
   )
@@ -414,44 +383,7 @@ const Main = styled.div`
   }
 `
 
-const CortanaText = styled.div`
-  font-weight: 600;
-  text-align: center;
-`
-
 const Utterance = styled.div`
   font-size: 17px;
   text-align: center;
-`
-
-const Controls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 48px;
-  height: 72px;
-
-  &.hybrid {
-    margin-bottom: 20px;
-    height: 50px;
-  }
-`
-
-const Microphone = styled.div`
-  width: 72px;
-  height: 72px;
-  background: rgba(98, 100, 167, 0.07);
-  border-radius: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  color: #6264a7;
-  
-  &.small {
-    background: transparent;
-    font-size: 24px;
-    width: 50px;
-    height: 50px;
-  }
 `

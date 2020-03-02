@@ -11,7 +11,7 @@ let skipLuis = false
 export const SpeechToTextContext = createContext()
 
 const SpeechToTextContextProvider = (props) => {
-	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance, setShowCortanaPanel, appendMessageToChatData } = useContext(GlobalContext)
+	const { setSttState, setAvatarState, setShowMic, setShowUtterance, setUtterance, setShowCortanaPanel, appendMessageToChatData, setCortanaText } = useContext(GlobalContext)
 
 	const initStt = () => {
 		recognizer = recognizerSetup(
@@ -97,6 +97,7 @@ const SpeechToTextContextProvider = (props) => {
 					setSttState('SpeechDetailedPhraseEvent')
 					if (event.Result.NBest) {
 						console.log(event.Result.NBest[0].ITN)
+						setCortanaText({ title: '' })
 						if (!skipLuis) {
 							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
 						} else {

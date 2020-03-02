@@ -12,7 +12,7 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel }) => {
+const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel, showDisambig }) => {
   let { firstName, message } = chatData
   let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
   let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
@@ -64,6 +64,10 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
     setShowTeamsChat(false)
   }
 
+  const renderDisambig = () => {
+    
+  }
+
   let teamsChatClasses = classNames({
     'showCortanaPanel': showCortanaPanel
   })
@@ -79,7 +83,10 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
         </div>
         <div className="middle">
           <div className="name">
-            { firstNameValue + ' ' + 'Jamil' }
+            { showDisambig ? 
+              firstNameValue
+              :
+              firstNameValue + ' ' + 'Jamil' }
           </div>
           <div className="status">
             <span className="dot"></span>
@@ -91,29 +98,35 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
           <i className="icon-teams icon-teams-Phone" />
         </div>
       </Header>
-      <Chat 
-        firstName={ firstNameValue }
-        content={{ messages: chatMessages }} />
-      <Footer>
-        <div className="left">
-          <i className="icon-teams icon-teams-CirclePlus" />
-        </div>
-        <div className="middle">
-          <input className="footerInput"
-            ref={ chatInputRef }
-            value={ inputValue }
-            onKeyPress={ onKeyPress }
-            onChange={ (event) => setInputValue(event.target.value) }
-            placeholder="Type a new message" />
-          <div className="smiley">
-            <i className="icon-teams icon-teams-Smiley" />
-          </div>
-        </div>
-        <div className="right"
-          onClick={ () => handleSendClick() }>
-          <i className={ "icon-teams-regular icon-teams-Send" + (inputValue.length == 0 ? ' disabled' : '') } />
-        </div>
-      </Footer>
+      { showDisambig ? 
+        renderDisambig()
+        :
+        <ChatWrapper>
+          <Chat 
+            firstName={ firstNameValue }
+            content={{ messages: chatMessages }} />
+          <Footer>
+            <div className="left">
+              <i className="icon-teams icon-teams-CirclePlus" />
+            </div>
+            <div className="middle">
+              <input className="footerInput"
+                ref={ chatInputRef }
+                value={ inputValue }
+                onKeyPress={ onKeyPress }
+                onChange={ (event) => setInputValue(event.target.value) }
+                placeholder="Type a new message" />
+              <div className="smiley">
+                <i className="icon-teams icon-teams-Smiley" />
+              </div>
+            </div>
+            <div className="right"
+              onClick={ () => handleSendClick() }>
+              <i className={ "icon-teams-regular icon-teams-Send" + (inputValue.length == 0 ? ' disabled' : '') } />
+            </div>
+          </Footer>
+        </ChatWrapper>
+      }
     </Container>
   )
 }

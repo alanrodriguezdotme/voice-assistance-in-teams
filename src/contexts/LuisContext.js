@@ -8,9 +8,10 @@ import { SpeechToTextContext } from './SpeechToTextContext'
 export const LuisContext = createContext()
 
 const speech = new Speech()
+let newChatData = null
 
 const LuisContextProvider = (props) => {
-	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData, playTts } = useContext(GlobalContext)
+	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData, playTts, shouldDisambig, setShowDisambig, selectedModel } = useContext(GlobalContext)
 	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
 	let { tts } = props
 
@@ -38,7 +39,9 @@ const LuisContextProvider = (props) => {
 		let firstName = splitString[0]
 		let lastName = splitString[1]
 
-		if (!lastName) { lastName = 'Jamil' }
+		if (!lastName) {
+			lastName = shouldDisambig ? null : 'Jamil' 
+		}
 
 		console.log('getName: ', firstName, lastName)
 
@@ -64,6 +67,19 @@ const LuisContextProvider = (props) => {
 		}, 2000)
 	}
 
+	const disambigLastName = (utterance) => {
+		if (utterance.includes('first') || utterance.includes('top') || utterance.includes('bennett')) {
+			newChatData.lastName = 'Bennett'
+			newChatData.photo = 'profilePic3.png'
+			return
+		}
+
+		if (utterance.includes('second') || utterance.includes('last') || utterance.includes('jiang')) {
+			newChatData.lastName = 'Jiang'
+			return
+		}
+	}
+
 	const getLuisResponse = (utterance, actions) => {
 		// Alan's LUIS account
 		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
@@ -84,7 +100,6 @@ const LuisContextProvider = (props) => {
 						console.log(data)
 						let personName = null
 						let message = null
-						let newChatData = null
 
 						if (entities.length > 0) {
 							let personNameObject = _.findWhere(entities, {
@@ -122,10 +137,28 @@ const LuisContextProvider = (props) => {
 									}
 									break
 
+								case 'grabFullName':
+									disambigLastName(scrubbedUtterance)
+									break
+
 								case 'triggerMessageSkill':
 									console.log(newChatData)
 									setChatData(newChatData)
 									let fullName = newChatData.firstName + ' ' + newChatData.lastName
+
+									if (shouldDisambig && !newChatData.lastName) {
+										if (selectedModel === 'distracted') {
+											setCortanaText({
+												title: 'Which ' + newChatData.firstName + ' do you want to message?'
+											})
+											setShowDisambig(true)
+											break
+										}
+										
+										if (selectedModel === 'hybrid') {
+											setShowTeamsChat(true)
+										}
+									}
 
 									if (newChatData.message) {
 										setCortanaText({
@@ -157,48 +190,6 @@ const LuisContextProvider = (props) => {
 				});
 
 		});
-	}
-
-	const setProfile = (utterance, type, skill, actions) => {
-		console.log('setProfile:', utterance)
-		//set the corresponding profile depending on phrase spoken
-		if (utterance.includes('smith') || utterance.includes('first')) {
-			actions.setAdaptiveCardContent({
-				type, skill,
-				firstName: cardContent.firstName,
-				lastName: cardContent.lastName ? cardContent.lastName : "Smith",
-				picture: "assets/profilePic1.png",
-				message: null
-			})
-		}
-		else if (utterance.includes('jones') || utterance.includes('second') || utterance.includes('middle')) {
-			actions.setAdaptiveCardContent({
-				type, skill,
-				firstName: cardContent.firstName,
-				lastName: cardContent.lastName ? cardContent.lastName : "Jones",
-				picture: "assets/profilePic2.png",
-				message: null
-			})
-		}
-		else if (utterance.includes('johnson') || utterance.includes('third') || utterance.includes('last')) {
-			actions.setAdaptiveCardContent({
-				type, skill,
-				firstName: cardContent.firstName,
-				lastName: cardContent.lastName ? cardContent.lastName : "Johnson",
-				picture: "assets/profilePic3.png",
-				message: null
-			})
-		}
-		else {
-			actions.setAdaptiveCardContent({
-				type, skill,
-				firstName: cardContent.firstName,
-				lastName: cardContent.lastName ? cardContent : "Smith",
-				picture: "assets/profilePic1.png",
-				message: null
-			})
-		}
-		actions.setShowAdaptiveCard(true)
 	}
 
 	return (

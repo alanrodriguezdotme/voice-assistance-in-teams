@@ -10,7 +10,7 @@ import Settings from './Settings/Settings'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 
 const Home = ({ os, tts }) => {
-  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage } = useContext(GlobalContext)
+  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, shouldDisambig } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
@@ -90,6 +90,7 @@ const Home = ({ os, tts }) => {
           <TeamsChat
             showCortanaPanel={ showCortanaPanel }
             shouldSendMessage={ shouldSendMessage }
+            showDisambig={ showDisambig }
             actions={{ resetCortana, recognizerStop }}
             chatData={ chatData }
             selectedModel={ selectedModel } />
