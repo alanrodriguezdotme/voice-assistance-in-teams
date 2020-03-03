@@ -10,7 +10,7 @@ import Settings from './Settings/Settings'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 
 const Home = ({ os, tts }) => {
-  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, shouldDisambig } = useContext(GlobalContext)
+  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
@@ -62,7 +62,7 @@ const Home = ({ os, tts }) => {
   }
 
   function handleTeamsWrapperClick() {
-    if (selectedModel === 'hybrid' && showCortanaPanel) {
+    if (selectedModel === 'hybrid' && showCortanaPanel && !showDisambig) {
       resetCortana(false)
       recognizerStop()
     }
@@ -88,6 +88,7 @@ const Home = ({ os, tts }) => {
         onClick={ () => handleTeamsWrapperClick() }>
         { showTeamsChat ?
           <TeamsChat
+            peopleData={ peopleData }
             showCortanaPanel={ showCortanaPanel }
             shouldSendMessage={ shouldSendMessage }
             showDisambig={ showDisambig }

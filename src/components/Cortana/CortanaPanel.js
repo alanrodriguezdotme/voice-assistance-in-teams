@@ -16,7 +16,7 @@ const options = {
 }
 
 const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, playTts, isMicOn, tts, luisResponse }) => {
-  let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat } = useContext(GlobalContext)
+  let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat, shouldDisambig, setShowDisambig } = useContext(GlobalContext)
   let { getLuisResponse, sendMessage } = useContext(LuisContext)
   let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -57,9 +57,11 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
           handleMicClick({ getLuisResponse })
         })
       } else if (chatData.firstName) {
-        tts.speak("What's your message for " + chatData.firstName + "?", () => {
-          handleMicClick({ getLuisResponse }, true)
-        })
+        if (!shouldDisambig) {
+          tts.speak("What's your message for " + chatData.firstName + "?", () => {
+            handleMicClick({ getLuisResponse }, true)
+          })
+        }
       }
     }
   }
@@ -88,7 +90,12 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
 
       if (selectedModel === 'hybrid') {
         if (chatData.firstName) {
-          setShowTeamsChat(true)
+          if (shouldDisambig && !chatData.lastName) {
+            setShowTeamsChat(true)
+            setShowDisambig(true)
+          } else {
+            setShowTeamsChat(true)
+          }
           if (!chatData.message && !playTts) {
             handleMicClick({ getLuisResponse }, true)
           } else if (chatData.message && !playTts && luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {

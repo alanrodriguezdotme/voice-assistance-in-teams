@@ -4,6 +4,7 @@ import * as _ from 'underscore'
 
 import { GlobalContext } from '../contexts/GlobalContext'
 import { SpeechToTextContext } from './SpeechToTextContext'
+import UsersData from './UsersData'
 
 export const LuisContext = createContext()
 
@@ -68,15 +69,26 @@ const LuisContextProvider = (props) => {
 	}
 
 	const disambigLastName = (utterance) => {
-		if (utterance.includes('first') || utterance.includes('top') || utterance.includes('bennett')) {
-			newChatData.lastName = 'Bennett'
-			newChatData.photo = 'profilePic3.png'
-			return
+		if (utterance.includes('first') || utterance.includes('top') || utterance.includes(UsersData[0].lastName)) {
+			newChatData.lastName = UsersData[0].lastName
+			newChatData.photo = UsersData[0].photo
+		} else if (utterance.includes('second') || utterance.includes('middle') || utterance.includes(UsersData[1].lastName)) {
+			newChatData.lastName = UsersData[1].lastName
+			newChatData.photo = UsersData[1].photo
+		} else if (utterance.includes('third') || utterance.includes('last') || utterance.includes(UsersData[2].lastName)) {
+			newChatData.lastName = UsersData[2].lastName
+			newChatData.photo = UsersData[2].photo
 		}
 
-		if (utterance.includes('second') || utterance.includes('last') || utterance.includes('jiang')) {
-			newChatData.lastName = 'Jiang'
-			return
+		setChatData({ ...newChatData })
+		setShowDisambig(false)
+
+		if (!newChatData.message) {
+			if (playTts) {
+				tts.speak("What's your message for " + newChatData.firstName + ' ' + newChatData.lastName + '?', () => {
+					handleMicClick({ getLuisResponse, chatData: newChatData }, true)
+				})
+			}
 		}
 	}
 
@@ -149,14 +161,24 @@ const LuisContextProvider = (props) => {
 									if (shouldDisambig && !newChatData.lastName) {
 										if (selectedModel === 'distracted') {
 											setCortanaText({
-												title: 'Which ' + newChatData.firstName + ' do you want to message?'
+												title: 'Which ' + newChatData.firstName + '?'
 											})
 											setShowDisambig(true)
 											break
 										}
 										
 										if (selectedModel === 'hybrid') {
-											setShowTeamsChat(true)
+											setShowTeamsChat(true)											
+											setShowDisambig(true)
+											setCortanaText({
+												title: 'Which ' + newChatData.firstName + '?'
+											})
+											if (playTts) {
+												tts.speak('Which ' + newChatData.firstName + '?', () => {
+													handleMicClick({ getLuisResponse }, false)
+												})
+											}
+											break
 										}
 									}
 

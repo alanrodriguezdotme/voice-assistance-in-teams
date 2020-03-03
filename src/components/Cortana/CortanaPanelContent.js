@@ -5,24 +5,14 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 import { LuisContext } from '../../contexts/LuisContext'
 import CortanaAvatar from './CortanaAvatar'
 import UserPhoto from '../UserPhoto'
-
-let disambigOptions = [
-  {
-    lastName: 'Bennett',
-    photo: 'profilePic3.png'
-  },
-  {
-    lastName: 'Jiang',
-    photo: null
-  }
-]
+import UsersData from '../../contexts/UsersData'
 
 const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaText, utterance }) => {
   let { resetCortana, shouldDisambig, showDisambig } = useContext(GlobalContext)
   let { sendMessage } = useContext(LuisContext)
 
   function renderDisambig() {
-    let options = disambigOptions.map((option, i) => {
+    let options = UsersData.map((option, i) => {
       return (
         <Person key={ 'disambig' + i }>
           <UserPhoto

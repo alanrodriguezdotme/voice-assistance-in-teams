@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 
-const Chat = ({ content, firstName, lastName = 'Jamil' }) => {
-  let [ recipientsValue, setRecipientsValue ] = useState(firstName + ' ' + lastName)
+import UserPhoto from '../../UserPhoto'
 
+const Chat = ({ content, firstName, lastName, chatData }) => {
   let renderMessages = () => {
     return content.messages.map((message, index) => {
       let isFromLastPerson = index > 0 ? content.messages[index - 1].lastName === content.messages[index].lastName : null
@@ -12,17 +12,19 @@ const Chat = ({ content, firstName, lastName = 'Jamil' }) => {
         return (
           <Row className={ isFromLastPerson ? "fromRecipient" : "fromRecipient moreSpaceOnTop" } key={ 'message' + index }>
             { 
-              message.photo && !isFromLastPerson ? 
-                <UserPhoto>
-                  <img src={ 'assets/' + message.photo } />
-                </UserPhoto>
+              !isFromLastPerson ? 
+                <UserPhoto
+                  size={ 32 }
+                  firstName={ firstName }
+                  lastName={ lastName }
+                  photo={ chatData.photo } />
                 :
                 <div style={{ width: '32px', height: '32px' }} />
             }
             <Message className="fromRecipient">
               {
                 !isFromLastPerson &&
-                  <div className="name">{ firstName + ' ' + message.lastName }</div>
+                  <div className="name">{ firstName + ' ' + lastName }</div>
               }
               { message.message }
             </Message>
@@ -42,12 +44,6 @@ const Chat = ({ content, firstName, lastName = 'Jamil' }) => {
 
   return (
     <Container>
-      <Recipients>
-        <div className="to">To: </div>
-        <input className="recipientsInput" 
-          value={ recipientsValue }
-          onChange={ (event) => setRecipientsValue(event.target.value)} />
-      </Recipients>
       <Messages>
         <div className="timestamp">Today 9:27 AM</div>
         { content && renderMessages() }
@@ -64,36 +60,6 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-`
-
-const Recipients = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  font-size: 14px;
-
-  .to {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 8px;
-    color: #666;
-    font-size: 14px;
-  }
-
-  .recipientsInput {
-    flex: 1;
-    border: none;
-    background: white;
-    font-family: 'Roboto', sans-serif;
-    outline: none;
-    color: #6464ae;
-    font-size: 14px;
-  }
-`
-
-const Timestamp = styled.div`
-
 `
 
 const Messages = styled.div`
@@ -128,16 +94,6 @@ const Row = styled.div`
 
   &.fromRecipient {
     justify-content: flex-start;
-  }
-`
-
-const UserPhoto = styled.div`
-  width: 32px;
-  height: 32px;
-
-  img {
-    width: 100%;
-    border-radius: 16px;
   }
 `
 

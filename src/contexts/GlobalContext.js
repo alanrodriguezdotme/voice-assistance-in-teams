@@ -1,6 +1,7 @@
 import React, { useState, createContext, useEffect } from 'react'
 
 import TeamsChatData from './TeamsChatData'
+import UsersData from './UsersData'
 
 let defaultCortanaText = {
 	title: "How can I help?",
@@ -9,9 +10,9 @@ let defaultCortanaText = {
 
 let defaultChatData = {
 	firstName: null,
-	lastName: 'Jamil',
+	lastName: null,
 	message: null,
-	photo: 'profilePic3.png'
+	photo: null
 }
 
 let emptyCortanaText = {
@@ -23,25 +24,26 @@ export const GlobalContext = createContext()
 
 const GlobalContextProvider = (props) => {
 	let [ avatarState, setAvatarState ] = useState('calm')
-	let [ sttState, setSttState ] = useState(null)
-	let [ showMic, setShowMic ] = useState(true)
-	let [ showUtterance, setShowUtterance ] = useState(false)
-	let [ utterance, setUtterance ] = useState(null)
-	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
-	let [ luisResponse, setLuisResponse ] = useState(null)
-	let [ cortanaText, setCortanaText ] = useState(defaultCortanaText)
-	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
-	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
 	let [ chatData, setChatData ] = useState(defaultChatData)
-	let [ orientation, setOrientation ] = useState(null)
-	let [ showSettings, setShowSettings ] = useState(false)
+	let [ chatMessages, setChatMessages ] = useState(TeamsChatData)
+	let [ cortanaText, setCortanaText ] = useState(defaultCortanaText)
 	let [ fullAttentionMode, setFullAttentionMode ] = useState(false)
-	let [ selectedModel, setSelectedModel ] = useState('hybrid')
-	let [ playTts, setPlayTts ] = useState(true)
 	let [ isMicOn, setIsMicOn ] = useState(false)
-	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
+	let [ luisResponse, setLuisResponse ] = useState(null)
+	let [ orientation, setOrientation ] = useState(null)
+	let [ peopleData, setPeopleData ] = useState(UsersData)
+	let [ playTts, setPlayTts ] = useState(true)
+	let [ selectedModel, setSelectedModel ] = useState('hybrid')
 	let [ shouldDisambig, setShouldDisambig ] = useState(true)
+	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
+	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
 	let [ showDisambig, setShowDisambig ] = useState(false)
+	let [ showMic, setShowMic ] = useState(true)
+	let [ showSettings, setShowSettings ] = useState(false)
+	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
+	let [ showUtterance, setShowUtterance ] = useState(false)
+	let [ sttState, setSttState ] = useState(null)
+	let [ utterance, setUtterance ] = useState(null)
 
 	const resetCortana = (resetChatMessages) => {
 		setSttState(null)
@@ -50,8 +52,10 @@ const GlobalContextProvider = (props) => {
 		setLuisResponse(null)
 		setShowCortanaPanel(false)
 		setCortanaText(emptyCortanaText)
-		setChatData(defaultChatData)
-		if (resetChatMessages) { setChatMessages(TeamsChatData) }
+		if (resetChatMessages) { 
+			setChatMessages(TeamsChatData)
+			setChatData(defaultChatData) 
+		}
 	}
 
 	function getMobileOperatingSystem() {
@@ -69,8 +73,9 @@ const GlobalContextProvider = (props) => {
 			return "unknown";
 	}
 
-	function appendMessageToChatData(message) {
-		setChatData({ ...chatData, message })
+	function appendMessageToChatData(message, data) {
+		console.log(data)
+		setChatData({ ...data, message })
 		setCortanaText({ ...cortanaText, subtitle: message })
 	}
 
@@ -138,6 +143,7 @@ const GlobalContextProvider = (props) => {
 			shouldSendMessage, setShouldSendMessage,
 			shouldDisambig, setShouldDisambig,
 			showDisambig, setShowDisambig,
+			peopleData, setPeopleData,
 			isMicOn,
 			resetCortana,
 			orientation,

@@ -101,7 +101,7 @@ const SpeechToTextContextProvider = (props) => {
 						if (!skipLuis) {
 							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
 						} else {
-							appendMessageToChatData(event.Result.NBest[0].ITN)
+							appendMessageToChatData(event.Result.NBest[0].ITN, actions.chatData)
 						}
 					} else {
 						setAvatarState('calm')

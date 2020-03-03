@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import Chat from './Chat'
+import Disambig from './Disambig'
 
 const capitalizeString = (str) => {
   if (str.includes(" ' ")) {
@@ -12,12 +13,14 @@ const capitalizeString = (str) => {
   return str.replace(/\b\w/, v => v.toUpperCase())
 }
 
-const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel, showDisambig }) => {
-  let { firstName, message } = chatData
-  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana } = useContext(GlobalContext)
+const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel, showDisambig, peopleData }) => {
+  let { firstName, lastName, message } = chatData
+  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana, shouldDisambig } = useContext(GlobalContext)
   let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
+  let [ lastNameValue, setLastNameValue ] = useState(lastName ? lastName : '')
   let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
+  let [ recipientsValue, setRecipientsValue ] = useState(!shouldDisambig && lastNameValue.length > 0 ? firstNameValue + ' ' + lastNameValue : firstNameValue)
 
   useEffect(() => {
     if (selectedModel === 'full attention') {
@@ -27,9 +30,15 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
 
   useEffect(() => {
     if (message) { setInputValue(message) }
-    if (firstName) { setFirstNameValue(firstName) }
+    if (firstName && firstName != firstNameValue) { 
+      setFirstNameValue(firstName) 
+    }
+    if (lastName && lastName != lastNameValue) {
+      setLastNameValue(lastName)
+      setRecipientsValue(firstNameValue + ' ' + lastName)
+    }
     if (shouldSendMessage && inputValue.length > 0) { handleSendClick() }
-  }, [firstName, message, shouldSendMessage])
+  }, [firstName, message, shouldSendMessage, lastName])
 
   const onKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -44,7 +53,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
     let newMessage = {
       lastName: 'user',
       timestamp: 0,
-      photo: 'profilePic2.png',
+      // photo: 'profilePic2.png',
       message: text
     }
 
@@ -64,10 +73,6 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
     setShowTeamsChat(false)
   }
 
-  const renderDisambig = () => {
-    
-  }
-
   let teamsChatClasses = classNames({
     'showCortanaPanel': showCortanaPanel
   })
@@ -82,28 +87,44 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
           <i className="icon-teams icon-teams-Spacer" />
         </div>
         <div className="middle">
-          <div className="name">
-            { showDisambig ? 
-              firstNameValue
-              :
-              firstNameValue + ' ' + 'Jamil' }
-          </div>
-          <div className="status">
-            <span className="dot"></span>
-            <span>Available</span>
-          </div>
+          { showDisambig ? 
+            <div className="title">
+              New chat
+            </div>
+            :
+            [
+              <div className="name" key={'name'}>
+                { firstNameValue + ' ' + lastNameValue }
+              </div>,
+              <div className="status" key={'status'}>
+                <span className="dot"></span>
+                <span>Available</span>
+              </div>
+            ]
+          }
         </div>
         <div className="right">
           <i className="icon-teams icon-teams-Video" />
           <i className="icon-teams icon-teams-Phone" />
         </div>
-      </Header>
+      </Header>      
+      <Recipients>
+        <div className="to">To: </div>
+        <input className="recipientsInput" 
+          value={ recipientsValue }
+          onChange={ (event) => setRecipientsValue(event.target.value)} />
+      </Recipients>
       { showDisambig ? 
-        renderDisambig()
+        <Disambig
+          recipientsValue={ recipientsValue }
+          peopleData={ peopleData }
+          chatData={ chatData } />
         :
         <ChatWrapper>
           <Chat 
+            chatData={ chatData }
             firstName={ firstNameValue }
+            lastName={ lastNameValue }
             content={{ messages: chatMessages }} />
           <Footer>
             <div className="left">
@@ -200,6 +221,36 @@ const Header = styled.div`
         margin-right: 3px;
       }
     }
+  }
+`
+
+const ChatWrapper = styled.div`
+
+`
+
+const Recipients = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  font-size: 14px;
+
+  .to {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .recipientsInput {
+    flex: 1;
+    border: none;
+    background: white;
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+    color: #6464ae;
+    font-size: 14px;
   }
 `
 
