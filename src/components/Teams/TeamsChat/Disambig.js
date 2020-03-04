@@ -2,19 +2,21 @@ import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import UserPhoto from '../../UserPhoto'
 import { GlobalContext } from '../../../contexts/GlobalContext'
+import { LuisContext } from '../../../contexts/LuisContext'
+import { SpeechToTextContext } from '../../../contexts/SpeechToTextContext'
 
-const Disambig = ({ peopleData, recipientsValue }) => {
-  let { setChatData, chatData } = useContext(GlobalContext)
+const Disambig = ({ peopleData, firstName }) => {
+  let { setChatData, chatData, setShowDisambig } = useContext(GlobalContext)
+  let { askForMessage } = useContext(LuisContext)
+  let { recognizerStop } = useContext(SpeechToTextContext)
 
-  useEffect(() => {
-    console.log(recipientsValue)
-  }, [ recipientsValue ])
-
-  function handleItemClick(person) {
+  function handleItemClick(person, event) {
     let data = { ...chatData }
     data.lastName = person.lastName
     data.photo = person.photo
-    setChatData(data)
+    setChatData({ ...data })
+    recognizerStop()
+    askForMessage(person.lastName)
   }
 
   function renderPeople() {
@@ -22,15 +24,15 @@ const Disambig = ({ peopleData, recipientsValue }) => {
       let { title, photo, lastName } = person
 
       return (
-        <Item key={ 'item-' + i } onClick={ () => handleItemClick(person) }>
+        <Item key={ 'item-' + i } onClick={ (event) => handleItemClick(person, event) }>
           <UserPhoto
             size={ 32 }
             photo={ photo }
-            firstName={ recipientsValue }
+            firstName={ firstName }
             lastName={ lastName }
           />
           <Details>
-            <Name>{ recipientsValue + ' ' + lastName }</Name>
+            <Name>{ firstName + ' ' + lastName }</Name>
             <Title>{ title }</Title>
           </Details>
         </Item>
@@ -69,7 +71,7 @@ const Item = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1px 12px;
+  margin: 0 12px 1px;
   background: white;
   padding: 12px;
   cursor: pointer;

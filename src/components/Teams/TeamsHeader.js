@@ -10,7 +10,7 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
   const { setShowCortanaPanel, setShowSettings } = useContext(GlobalContext)
-  const { handleMicClick, recognizerStop } = useContext(SpeechToTextContext)
+  const { handleMicClick } = useContext(SpeechToTextContext)
   // const { sttStart } = useContext(BrowserSTTContext)
   const { getLuisResponse } = useContext(LuisContext)
 

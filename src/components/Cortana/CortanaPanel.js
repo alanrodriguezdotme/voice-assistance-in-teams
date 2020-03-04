@@ -49,23 +49,6 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
     }
   }, [showCortanaPanel, selectedModel])
 
-  function speak() {
-    if (luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
-      if (chatData.message) {
-        setCortanaText({ title: "Do you want to send it?", subtitle: chatData.message })
-        tts.speak("Do you want to send it?", () => {
-          handleMicClick({ getLuisResponse })
-        })
-      } else if (chatData.firstName) {
-        if (!shouldDisambig) {
-          tts.speak("What's your message for " + chatData.firstName + "?", () => {
-            handleMicClick({ getLuisResponse }, true)
-          })
-        }
-      }
-    }
-  }
-
   useEffect(() => {
     console.log(sttState)
   }, [sttState])
@@ -73,12 +56,10 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
   useEffect(() => {
     if (showCortanaPanel) {
       if (selectedModel === 'distracted') {
-        if (luisResponse) {
-          setShowFullPanel(true)
-        } else {
-          setShowFullPanel(false)
-        }
-        if (playTts) { speak() }
+
+        if (luisResponse) { setShowFullPanel(true) } 
+        else { setShowFullPanel(false) }
+
       } else {
         setShowFullPanel(false)
       }
@@ -103,7 +84,6 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
             handleMicClick({ getLuisResponse })
           }
         }
-        if (playTts) { speak() }
       }
     }
   }, [luisResponse, selectedModel, chatData, showCortanaPanel])
@@ -138,7 +118,8 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
 
   let overlayClasses = classNames({
     'showOverlay': showOverlay,
-    'fullPanel': showFullPanel
+    'fullPanel': showFullPanel,
+    'hybrid': selectedModel === 'hybrid'
   })
 
   let containerClasses = classNames({
@@ -153,7 +134,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
   return (
     <Container className={ containerClasses }
       selectedModel={ selectedModel }>
-      { selectedModel === 'hybrid' || selectedModel === 'distracted' &&
+      { selectedModel === 'distracted' &&
         <Overlay className={ overlayClasses }
           onClick={ () => handleOverlayClick() } />
       }
@@ -173,15 +154,18 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
           </Top>
         }
         { showFullPanel ?
-          <CortanaPanelContent
-            showFullPanel={ showFullPanel }
-            selectedModel={ selectedModel }
-            chatData={ chatData }
-            cortanaText={ cortanaText } />
+          <Content>
+            <CortanaPanelContent
+              showFullPanel={ showFullPanel }
+              selectedModel={ selectedModel }
+              chatData={ chatData }
+              cortanaText={ cortanaText } />
+          </Content>
           :
           <Main className={ mainClasses }>{ renderCortini() }</Main>
         }
         <CortanaPanelControls
+          utterance={ utterance }
           isMicOn={ isMicOn }
           sttState={ sttState }
           selectedModel={ selectedModel }
@@ -233,6 +217,10 @@ const Overlay = styled.div`
 
   &.showOverlay {
     opacity: 1;
+  }
+
+  &.hybrid {
+    pointer-events: none;
   }
 
   &.fullPanel {
@@ -316,8 +304,6 @@ const Button = styled.div`
 const Content = styled.div`
   flex: 1;
   width: 100%;
-  display: flex;
-  flex-direction: column;
 `
 
 const Title = styled.div`
@@ -328,48 +314,6 @@ const Title = styled.div`
 
   &.fullPanel {
     font-size: 28px;
-  }
-`
-
-const Scroll = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-`
-
-const Message = styled.div`
-  width: 100%;
-  padding: 0 20px 20px 20px;
-  text-align: center;
-  font-size: 22px;
-  letter-spacing: 0.35px;
-  line-height: 28px;
-  color: #333;
-`
-
-const Actions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 20px;
-`
-
-const Action = styled.div`
-  min-width: 110px;
-  height: 48px;
-  background: rgb(255, 255, 255);
-  border-radius: 4px;
-  border: 1px solid rgb(98, 100, 167);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #6264a7;
-  font-size: 18px;
-
-  &:first-child{
-    margin-right: 20px;
   }
 `
 

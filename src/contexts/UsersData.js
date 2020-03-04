@@ -5,7 +5,7 @@ const UsersData = [
     title: 'Senior Program Manager'
   },
   {
-    lastName: 'Jiang',
+    lastName: 'Hall',
     photo: 'profilePic3.png',
     title: 'Software Engineer II'
   },

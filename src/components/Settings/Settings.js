@@ -72,7 +72,7 @@ const Settings = ({ showSettings }) => {
               checked={ playTts }
               onChange={ (event) => handleTtsChange(event) } />
           </Control>
-          {/* <Control>
+          <Control>
             <Label>
               Disambiguation
             </Label>
@@ -80,7 +80,7 @@ const Settings = ({ showSettings }) => {
               checked={ shouldDisambig }
               defaultChecked={ shouldDisambig }
               onChange={ (event) => handleDisambigChange(event) } />
-          </Control> */}
+          </Control>
         </Controls>
         { orientation &&
           <Orientation>

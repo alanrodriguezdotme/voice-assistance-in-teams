@@ -101,7 +101,7 @@ const SpeechToTextContextProvider = (props) => {
 						if (!skipLuis) {
 							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
 						} else {
-							appendMessageToChatData(event.Result.NBest[0].ITN, actions.chatData)
+							appendMessageToChatData(event.Result.NBest[0].ITN, actions.chatData, { handleMicClick, getLuisResponse: actions.getLuisResponse })
 						}
 					} else {
 						setAvatarState('calm')
@@ -130,16 +130,12 @@ const SpeechToTextContextProvider = (props) => {
 		})
 	}
 
-	const recognizerStop = () => {
+	const recognizerStop = (reset) => {
 		if (recognizer) {
 			recognizer.AudioSource.TurnOff()
 		} else {
 			initStt()
 		}
-		setAvatarState('calm')
-		setSttState(null)
-		setShowCortanaPanel(false)
-		setUtterance(null)
 	}
 
 	return (

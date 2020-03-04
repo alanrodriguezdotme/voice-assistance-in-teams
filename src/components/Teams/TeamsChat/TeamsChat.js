@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import Chat from './Chat'
 import Disambig from './Disambig'
+import { LuisContext } from '../../../contexts/LuisContext'
+import { SpeechToTextContext } from '../../../contexts/SpeechToTextContext'
 
 const capitalizeString = (str) => {
   if (str.includes(" ' ")) {
@@ -15,12 +17,14 @@ const capitalizeString = (str) => {
 
 const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPanel, showDisambig, peopleData }) => {
   let { firstName, lastName, message } = chatData
-  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana, shouldDisambig } = useContext(GlobalContext)
+  let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana, shouldDisambig, setShowDisambig } = useContext(GlobalContext)
+  let { resetLuis } = useContext(LuisContext)
+  let { recognizerStop } = useContext(SpeechToTextContext)
   let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
   let [ lastNameValue, setLastNameValue ] = useState(lastName ? lastName : '')
-  let [ inputValue, setInputValue ] = useState(message ? capitalizeString(message) : '')
+  let [ inputValue, setInputValue ] = useState(chatData.message ? capitalizeString(message) : '')
   let [ chatInputRef, setChatInputRef ] = useState(React.createRef(chatInputRef))
-  let [ recipientsValue, setRecipientsValue ] = useState(!shouldDisambig && lastNameValue.length > 0 ? firstNameValue + ' ' + lastNameValue : firstNameValue)
+  let [ recipientsValue, setRecipientsValue ] = useState(!shouldDisambig && lastNameValue.length > 0 ? firstNameValue + ' ' + lastNameValue : firstNameValue + ' ' + lastNameValue)
 
   useEffect(() => {
     if (selectedModel === 'full attention') {
@@ -36,6 +40,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
     if (lastName && lastName != lastNameValue) {
       setLastNameValue(lastName)
       setRecipientsValue(firstNameValue + ' ' + lastName)
+      setShowDisambig(false)
     }
     if (shouldSendMessage && inputValue.length > 0) { handleSendClick() }
   }, [firstName, message, shouldSendMessage, lastName])
@@ -45,6 +50,13 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
       if (inputValue.length > 0) {
         addMessage(inputValue)
       }
+    }
+  }
+
+  function handleTeamsWrapperClick() {
+    if (selectedModel === 'hybrid' && showCortanaPanel) {
+      resetCortana(false)
+      recognizerStop()
     }
   }
 
@@ -71,6 +83,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
   const handleBackClick = () => {
     resetCortana(true)
     setShowTeamsChat(false)
+    resetLuis()
   }
 
   let teamsChatClasses = classNames({
@@ -116,11 +129,11 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
       </Recipients>
       { showDisambig ? 
         <Disambig
-          recipientsValue={ recipientsValue }
+          firstName={ chatData.firstName }
           peopleData={ peopleData }
           chatData={ chatData } />
         :
-        <ChatWrapper>
+        <ChatWrapper className={ selectedModel } onClick={ () => !showDisambig && handleTeamsWrapperClick() }>
           <Chat 
             chatData={ chatData }
             firstName={ firstNameValue }
@@ -225,7 +238,13 @@ const Header = styled.div`
 `
 
 const ChatWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 
+  &.hybrid {
+    height: calc(100% - 200px);
+  }
 `
 
 const Recipients = styled.div`

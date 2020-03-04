@@ -61,13 +61,6 @@ const Home = ({ os, tts }) => {
     )
   }
 
-  function handleTeamsWrapperClick() {
-    if (selectedModel === 'hybrid' && showCortanaPanel && !showDisambig) {
-      resetCortana(false)
-      recognizerStop()
-    }
-  }
-
   let teamsWrapperClasses = classNames({
     'hybrid': selectedModel === 'hybrid',
     'showCortanaPanel': showCortanaPanel,
@@ -84,8 +77,7 @@ const Home = ({ os, tts }) => {
       }
       <Settings
         showSettings={ showSettings } />
-      <TeamsWrapper classNames={ teamsWrapperClasses }
-        onClick={ () => handleTeamsWrapperClick() }>
+      <TeamsWrapper classNames={ teamsWrapperClasses }>
         { showTeamsChat ?
           <TeamsChat
             peopleData={ peopleData }

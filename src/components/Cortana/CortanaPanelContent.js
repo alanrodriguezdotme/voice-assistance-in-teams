@@ -53,14 +53,10 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
           { cortanaText.title }
         </Title>
         <Scroll>
-          { utterance && !cortanaText.subtitle ?
-              <Utterance>
-                { utterance }
-              </Utterance>
-              :
-              <Message>
-                { cortanaText.subtitle }
-              </Message>
+          { !utterance && cortanaText.subtitle && 
+            <Message>
+              { cortanaText.subtitle }
+            </Message>
           }
           {/* { showDisambig && !chatData.lastName ?
               renderDisambig()

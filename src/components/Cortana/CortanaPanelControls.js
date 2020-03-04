@@ -1,23 +1,34 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import classNames from 'classnames'
 
 import VoiceMeter from './VoiceMeter'
+import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 
-const CortanaPanelControls = ({ isMicOn, sttState, getLuisResponse, showFullPanel, selectedModel }) => {
+const CortanaPanelControls = ({ isMicOn, sttState, getLuisResponse, showFullPanel, selectedModel, utterance }) => {
+  let { handleMicClick } = useContext(SpeechToTextContext)
 
   let controlsClasses = classNames({
-    'hybrid': selectedModel === 'hybrid'
+    'hybrid': selectedModel === 'hybrid',
+    'fullPanel': showFullPanel
   })
 
   let microphoneClasses = classNames({
     'small': !showFullPanel
   })
 
+  function renderUtterance() {
+    if (utterance && showFullPanel) {
+      return <Utterance>{ utterance }</Utterance>
+    } else {
+      return <VoiceMeter sttState={ sttState } color="#6B6BA0" />
+    }
+  }
+
   return (
     <Container className={ controlsClasses }>
       { isMicOn ?
-        <VoiceMeter sttState={ sttState } color="#6B6BA0" />
+        renderUtterance()
         :
         <Microphone className={ microphoneClasses }
           onClick={ () => handleMicClick({ getLuisResponse }) }>
@@ -41,6 +52,11 @@ const Container = styled.div`
     margin-bottom: 20px;
     height: 50px;
   }
+`
+
+const Utterance = styled.div`
+  color: #6264a7;
+  font-size: 18px;
 `
 
 const Microphone = styled.div`

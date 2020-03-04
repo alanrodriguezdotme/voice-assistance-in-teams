@@ -19,7 +19,8 @@ const LuisContextProvider = (props) => {
 	const resetLuis = () => {
 	//completely reset the demo
 	  recognizerStop()
-	  initStt()
+		initStt()
+		newChatData = null
 	}
 
 	const finishFlow = () => {
@@ -51,6 +52,7 @@ const LuisContextProvider = (props) => {
 
 	const sendMessage = () => {		
 		setCortanaText({ title: 'Sending...' })
+
 		setTimeout(() => {
 			setShouldSendMessage(true)
 			setCortanaText({ title: "I've sent this." })
@@ -83,12 +85,58 @@ const LuisContextProvider = (props) => {
 		setChatData({ ...newChatData })
 		setShowDisambig(false)
 
-		if (!newChatData.message) {
-			if (playTts) {
-				tts.speak("What's your message for " + newChatData.firstName + ' ' + newChatData.lastName + '?', () => {
-					handleMicClick({ getLuisResponse, chatData: newChatData }, true)
-				})
-			}
+		if (!newChatData.message) { askForMessage() }
+		else { confirmSend() }
+	}
+
+	const askForMessage = (name) => {		
+		setCortanaText({
+			title: "What's your message?",
+			subtitle: null
+		})
+
+		if (name) { 
+			newChatData.lastName = name
+			setChatData({ ...newChatData })
+		}
+
+		if (playTts) {
+			tts.speak("What's your message for " + newChatData.firstName + ' ' + newChatData.lastName + '?', () => {
+				handleMicClick({ getLuisResponse, chatData: newChatData }, true)
+			})
+		} else {
+			handleMicClick({ getLuisResponse, chatData: newChatData }, true)
+		}
+	}
+
+	const confirmSend = () => {		
+		setCortanaText({ 
+			title: "Do you want to send it?", 
+			subtitle: chatData.message 
+		})
+		
+		if (playTts) {
+			tts.speak("Do you want to send it?", () => {
+				handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+			})
+		} else {
+			handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+		}
+	}
+
+	const disambig = () => {
+		setShowDisambig(true)
+		setCortanaText({
+			title: "Which " + newChatData.firstName,
+			subtitle: chatData.message
+		})
+		
+		if (playTts) {
+			tts.speak("Which " + newChatData.firstName, () => {
+				handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+			})
+		} else {
+			handleMicClick({ getLuisResponse, chatData: newChatData }, false)
 		}
 	}
 
@@ -144,9 +192,9 @@ const LuisContextProvider = (props) => {
 									break
 
 								case 'confirm':
-									if (chatData.message) {
+									// if (newChatData.message) {
 										sendMessage()
-									}
+									// }
 									break
 
 								case 'grabFullName':
@@ -158,40 +206,29 @@ const LuisContextProvider = (props) => {
 									setChatData(newChatData)
 									let fullName = newChatData.firstName + ' ' + newChatData.lastName
 
-									if (shouldDisambig && !newChatData.lastName) {
-										if (selectedModel === 'distracted') {
-											setCortanaText({
-												title: 'Which ' + newChatData.firstName + '?'
-											})
-											setShowDisambig(true)
-											break
-										}
-										
-										if (selectedModel === 'hybrid') {
-											setShowTeamsChat(true)											
-											setShowDisambig(true)
-											setCortanaText({
-												title: 'Which ' + newChatData.firstName + '?'
-											})
-											if (playTts) {
-												tts.speak('Which ' + newChatData.firstName + '?', () => {
-													handleMicClick({ getLuisResponse }, false)
-												})
+									if (shouldDisambig) {
+										if (!newChatData.lastName) {
+											if (selectedModel === 'distracted') {
+												askForMessage('Jamil')
+												break
 											}
+											
+											if (selectedModel === 'hybrid') {
+												setShowTeamsChat(true)
+												disambig()
+												break
+											}
+										
+										// if lastName exists
+										} else {
+											if (!newChatData.message) { askForMessage() }
+											else { confirmSend() }
+										}
+									} else {
+										if (selectedModel === 'distracted') {
+											askForMessage('Jamil')
 											break
 										}
-									}
-
-									if (newChatData.message) {
-										setCortanaText({
-											title: fullName,
-											subtitle: newChatData.message
-										})
-									} else {
-										setCortanaText({
-											title: "What's your message?",
-											subtitle: null
-										})
 									}
 
 									break
@@ -215,7 +252,7 @@ const LuisContextProvider = (props) => {
 	}
 
 	return (
-		<LuisContext.Provider value={{ getLuisResponse, resetLuis, sendMessage }}>
+		<LuisContext.Provider value={{ getLuisResponse, resetLuis, sendMessage, askForMessage }}>
 			{ props.children }
 		</LuisContext.Provider>
 	)

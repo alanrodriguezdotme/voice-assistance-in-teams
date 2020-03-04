@@ -2,6 +2,8 @@ import React, { useState, createContext, useEffect } from 'react'
 
 import TeamsChatData from './TeamsChatData'
 import UsersData from './UsersData'
+import TextToSpeech from './TextToSpeech'
+let tts = new TextToSpeech()
 
 let defaultCortanaText = {
 	title: "How can I help?",
@@ -73,10 +75,21 @@ const GlobalContextProvider = (props) => {
 			return "unknown";
 	}
 
-	function appendMessageToChatData(message, data) {
+	function appendMessageToChatData(message, data, actions) {
 		console.log(data)
 		setChatData({ ...data, message })
-		setCortanaText({ ...cortanaText, subtitle: message })
+		setCortanaText({ 
+			title: 'Do you want to send it?', 
+			subtitle: message 
+		})		
+
+		if (playTts) {
+			tts.speak("Do you want to send it?", () => {
+				actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+			})
+		} else {
+			actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+		}
 	}
 
 	const initSensor = () => {
