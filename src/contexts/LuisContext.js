@@ -202,9 +202,8 @@ const LuisContextProvider = (props) => {
 									break
 
 								case 'triggerMessageSkill':
-									console.log(newChatData)
+									console.log('newChatData:', newChatData)
 									setChatData(newChatData)
-									let fullName = newChatData.firstName + ' ' + newChatData.lastName
 
 									if (shouldDisambig) {
 										if (!newChatData.lastName) {
@@ -213,16 +212,24 @@ const LuisContextProvider = (props) => {
 												break
 											}
 											
-											if (selectedModel === 'hybrid') {
+											if (selectedModel === 'converged') {
 												setShowTeamsChat(true)
 												disambig()
 												break
 											}
+											// disambig()
+											break
 										
 										// if lastName exists
 										} else {
-											if (!newChatData.message) { askForMessage() }
-											else { confirmSend() }
+											if (!newChatData.message && selectedModel != 'full attention') { 
+												askForMessage()
+											}
+											else { 
+												if (selectedModel != 'full attention') {
+													confirmSend() 
+												}
+											}
 										}
 									} else {
 										if (selectedModel === 'distracted') {

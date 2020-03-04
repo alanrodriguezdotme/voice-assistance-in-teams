@@ -12,7 +12,7 @@ const Settings = ({ showSettings }) => {
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
-  const modelOptions = [ 'distracted', 'full attention', 'hybrid' ]
+  const modelOptions = [ 'distracted', 'full attention', 'converged' ]
 
   useEffect(() => {
     if (showSettings) {
@@ -66,7 +66,7 @@ const Settings = ({ showSettings }) => {
           <Control>
             <Label>
               TTS
-              <div className="caption">(hybrid and distracted)</div>
+              <div className="caption">(converged and distracted)</div>
             </Label>
             <Toggle
               checked={ playTts }
@@ -75,6 +75,7 @@ const Settings = ({ showSettings }) => {
           <Control>
             <Label>
               Disambiguation
+              <div className="caption">(converged)</div>
             </Label>
             <Toggle
               checked={ shouldDisambig }

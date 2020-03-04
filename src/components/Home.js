@@ -62,7 +62,7 @@ const Home = ({ os, tts }) => {
   }
 
   let teamsWrapperClasses = classNames({
-    'hybrid': selectedModel === 'hybrid',
+    'converged': selectedModel === 'converged',
     'showCortanaPanel': showCortanaPanel,
     'showTeamsChat': showTeamsChat
   })
@@ -117,7 +117,7 @@ const Container = styled.div`
   background: white;
   position: relative;
   overflow: hidden;
-  /* display: ${ p => p.selectedModel === 'hybrid' ? 'flex' : 'block' }; */
+  /* display: ${ p => p.selectedModel === 'converged' ? 'flex' : 'block' }; */
   flex-direction: column;
 
   @media (max-width: 500px) {
@@ -132,7 +132,7 @@ const TeamsWrapper = styled.div`
   flex: 1;
   transition: height 350ms cubic-bezier(.1, .69, .38, .9);
 
-  /* &.hybrid &.showCortanaPanel &.showTeamsChat {
+  /* &.converged &.showCortanaPanel &.showTeamsChat {
     height: calc(100% - 200px);
   } */
 `

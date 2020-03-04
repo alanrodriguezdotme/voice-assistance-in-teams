@@ -8,15 +8,16 @@ import TeamsNav from './TeamsNav'
 
 const TeamsHome = ({ selectedModel, showCortanaPanel, actions }) => {
   let { resetCortana, recognizerStop } = actions
+
   function handleClick() {
-    if (selectedModel === 'hybrid' && showCortanaPanel) {
+    if (selectedModel === 'converged' && showCortanaPanel) {
       resetCortana()
       recognizerStop()
     }
   }
 
   let containerClasses = classNames({
-    'hybrid': selectedModel === 'hybrid',
+    'converged': selectedModel === 'converged',
     'showCortanaPanel': showCortanaPanel
   })
 

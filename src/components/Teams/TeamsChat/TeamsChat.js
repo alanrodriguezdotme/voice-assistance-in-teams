@@ -54,7 +54,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
   }
 
   function handleTeamsWrapperClick() {
-    if (selectedModel === 'hybrid' && showCortanaPanel) {
+    if (selectedModel === 'converged' && showCortanaPanel) {
       resetCortana(false)
       recognizerStop()
     }
@@ -178,7 +178,7 @@ const Container = styled.div`
   z-index: 1001;
   overflow: hidden;
 
-  &.hybrid {
+  &.converged {
     &.showCortanaPanel {
       height: calc(100% - 200px);
     } 
@@ -242,7 +242,7 @@ const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  &.hybrid {
+  &.converged {
     height: calc(100% - 200px);
   }
 `

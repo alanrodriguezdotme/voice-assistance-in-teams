@@ -16,7 +16,7 @@ const options = {
 }
 
 const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, playTts, isMicOn, tts, luisResponse }) => {
-  let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat, shouldDisambig, setShowDisambig } = useContext(GlobalContext)
+  let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat, shouldDisambig, setShowDisambig, setChatData } = useContext(GlobalContext)
   let { getLuisResponse, sendMessage } = useContext(LuisContext)
   let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -26,7 +26,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
 
   // handle timing of transitions
   useEffect(() => {
-    if (selectedModel != 'hybrid') {
+    if (selectedModel != 'converged') {
       if (showCortanaPanel) {
         setShowOverlay(true)
         setTimeout(() => {
@@ -65,11 +65,17 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
       }
 
       if (selectedModel === 'full attention' && chatData.firstName) {
+        if (!chatData.lastName) {
+          setChatData({
+            ...chatData,
+            lastName: 'Jamil'
+          })
+        }
         setShowCortanaPanel(false)
         setShowTeamsChat(true)
       }
 
-      if (selectedModel === 'hybrid') {
+      if (selectedModel === 'converged') {
         if (chatData.firstName) {
           if (shouldDisambig && !chatData.lastName) {
             setShowTeamsChat(true)
@@ -119,16 +125,16 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
   let overlayClasses = classNames({
     'showOverlay': showOverlay,
     'fullPanel': showFullPanel,
-    'hybrid': selectedModel === 'hybrid'
+    'converged': selectedModel === 'converged'
   })
 
   let containerClasses = classNames({
     'showOverlay': showOverlay,
-    'hybrid': selectedModel === 'hybrid'
+    'converged': selectedModel === 'converged'
   })
 
   let mainClasses = classNames({
-    'hybrid': selectedModel === 'hybrid'
+    'converged': selectedModel === 'converged'
   })
 
   return (
@@ -195,7 +201,7 @@ const Container = styled.div`
     bottom: 0;
   }
 
-  &.hybrid {
+  &.converged {
     bottom: 0;
     /* position: relative; */
 
@@ -219,7 +225,7 @@ const Overlay = styled.div`
     opacity: 1;
   }
 
-  &.hybrid {
+  &.converged {
     pointer-events: none;
   }
 
@@ -256,7 +262,7 @@ const Panel = styled.div`
     transform: translateY(-100%);
   }
 
-  &.hybrid {
+  &.converged {
     /* border-radius: 0; */
     height: 100%;
     /* transition: none; */
@@ -329,7 +335,7 @@ const Main = styled.div`
   line-height: 22px;
   flex: 1;
 
-  &.hybrid {
+  &.converged {
     height: 100%;
   }
 `

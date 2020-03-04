@@ -34,7 +34,7 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
     )
   }
 
-  function renderHybridContent() {
+  function renderconvergedContent() {
     return (
       <Title>
         { cortanaText.title }
@@ -76,7 +76,7 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
   return (
     <Container>
       { selectedModel === 'distracted' && showFullPanel && renderFullPanelContent() }
-      { selectedModel === 'hybrid' && renderHybridContent() } 
+      { selectedModel === 'converged' && renderconvergedContent() } 
     </Container>
   )
 }

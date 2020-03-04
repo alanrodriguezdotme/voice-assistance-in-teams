@@ -9,7 +9,7 @@ const CortanaPanelControls = ({ isMicOn, sttState, getLuisResponse, showFullPane
   let { handleMicClick } = useContext(SpeechToTextContext)
 
   let controlsClasses = classNames({
-    'hybrid': selectedModel === 'hybrid',
+    'converged': selectedModel === 'converged',
     'fullPanel': showFullPanel
   })
 
