@@ -67,17 +67,18 @@ const LuisContextProvider = (props) => {
 					recognizerStop()
 				}, 2000)
 			}
-		}, 2000)
+		}, 1000)
 	}
 
 	const disambigLastName = (utterance) => {
-		if (utterance.includes('first') || utterance.includes('top') || utterance.includes(UsersData[0].lastName)) {
+		utterance = utterance.toLowerCase()
+		if (utterance.includes('first') || utterance.includes('top') || utterance.includes('rogan')) {
 			newChatData.lastName = UsersData[0].lastName
 			newChatData.photo = UsersData[0].photo
-		} else if (utterance.includes('second') || utterance.includes('middle') || utterance.includes(UsersData[1].lastName)) {
+		} else if (utterance.includes('second') || utterance.includes('middle') || utterance.includes('hall')) {
 			newChatData.lastName = UsersData[1].lastName
 			newChatData.photo = UsersData[1].photo
-		} else if (utterance.includes('third') || utterance.includes('last') || utterance.includes(UsersData[2].lastName)) {
+		} else if (utterance.includes('third') || utterance.includes('last') || utterance.includes('jackson')) {
 			newChatData.lastName = UsersData[2].lastName
 			newChatData.photo = UsersData[2].photo
 		}
@@ -198,6 +199,7 @@ const LuisContextProvider = (props) => {
 									break
 
 								case 'grabFullName':
+									console.log('grabFullName:', scrubbedUtterance)
 									disambigLastName(scrubbedUtterance)
 									break
 

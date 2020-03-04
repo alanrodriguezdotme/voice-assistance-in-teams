@@ -100,7 +100,6 @@ const Row = styled.div`
 const Message = styled.div`
   max-width: 65%;
   width: auto;
-  min-width: 85px;
   padding: 6px;
   line-height: 18px;
   margin-bottom: 2px;

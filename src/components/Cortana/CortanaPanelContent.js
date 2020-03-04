@@ -58,11 +58,11 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
               { cortanaText.subtitle }
             </Message>
           }
-          {/* { showDisambig && !chatData.lastName ?
+          { showDisambig && !chatData.lastName ?
               renderDisambig()
               :
               null
-          } */}
+          }
           { chatData.message &&
             <Actions>
               <Action onClick={ () => sendMessage() }>Send</Action>

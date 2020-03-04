@@ -1,6 +1,6 @@
 const UsersData = [
   {
-    lastName: 'Bennett',
+    lastName: 'Rogan',
     photo: 'profilePic4.png',
     title: 'Senior Program Manager'
   },
@@ -10,7 +10,7 @@ const UsersData = [
     title: 'Software Engineer II'
   },
   {
-    lastName: 'Larsson',
+    lastName: 'Jackson',
     photo: 'profilePic5.png',
     title: 'Principal Designer'
   }
