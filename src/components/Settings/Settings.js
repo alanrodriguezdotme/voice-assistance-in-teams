@@ -8,7 +8,7 @@ import "react-toggle/style.css"
 import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
-  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, playTts, setPlayTts, shouldDisambig, setShouldDisambig } = useContext(GlobalContext)
+  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, playTts, setPlayTts, shouldDisambig, setShouldDisambig, showInstructions, setShowInstructions } = useContext(GlobalContext)
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -79,8 +79,15 @@ const Settings = ({ showSettings }) => {
             </Label>
             <Toggle
               checked={ shouldDisambig }
-              defaultChecked={ shouldDisambig }
               onChange={ (event) => handleDisambigChange(event) } />
+          </Control>
+          <Control>
+            <Label>
+              Show instructions
+            </Label>
+            <Toggle
+              checked={ showInstructions }
+              onChange={ (event) => setShowInstructions(event.target.checked) } />
           </Control>
         </Controls>
         { orientation &&

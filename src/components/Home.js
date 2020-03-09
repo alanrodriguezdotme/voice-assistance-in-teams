@@ -8,9 +8,10 @@ import { GlobalContext } from '../contexts/GlobalContext'
 import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
+import Instructions from './Instructions/Instructions'
 
 const Home = ({ os, tts }) => {
-  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData } = useContext(GlobalContext)
+  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData, showInstructions } = useContext(GlobalContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
   let [ showPermission, setShowPermission ] = useState(true)
 
@@ -74,6 +75,10 @@ const Home = ({ os, tts }) => {
         os === 'iOS' &&
         showPermission &&
           renderPermission()
+      }
+      {
+        showInstructions &&
+        <Instructions />
       }
       <Settings
         showSettings={ showSettings } />
