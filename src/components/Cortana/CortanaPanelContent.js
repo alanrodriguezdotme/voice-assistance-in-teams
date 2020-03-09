@@ -6,41 +6,11 @@ import { LuisContext } from '../../contexts/LuisContext'
 import CortanaAvatar from './CortanaAvatar'
 import UserPhoto from '../UserPhoto'
 import UsersData from '../../contexts/UsersData'
+import CortanaPanelDisambig from './CortanaPanelDisambig'
 
 const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaText, utterance }) => {
   let { resetCortana, shouldDisambig, showDisambig } = useContext(GlobalContext)
   let { sendMessage } = useContext(LuisContext)
-
-  function renderDisambig() {
-    let options = UsersData.map((option, i) => {
-      return (
-        <Person key={ 'disambig' + i }>
-          <UserPhoto
-            size={ 24 }
-            photo={ option.photo }
-            firstName={ chatData.firstName}
-            lastName={ option.lastName } />
-          <Name>
-            { chatData.firstName + ' ' + option.lastName }
-          </Name>
-        </Person>
-      )
-    })
-
-    return (
-      <Disambig>
-        { options }
-      </Disambig>
-    )
-  }
-
-  function renderconvergedContent() {
-    return (
-      <Title>
-        { cortanaText.title }
-      </Title>
-    )
-  }
 
   function renderFullPanelContent() {
     return (
@@ -59,7 +29,9 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
             </Message>
           }
           { showDisambig && !chatData.lastName ?
-              renderDisambig()
+              <CortanaPanelDisambig 
+              peopleData={ UsersData }
+              firstName={ chatData.firstName } />
               :
               null
           }
@@ -76,7 +48,7 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
   return (
     <Container>
       { selectedModel === 'distracted' && showFullPanel && renderFullPanelContent() }
-      { selectedModel === 'converged' && renderconvergedContent() } 
+      {/* { selectedModel === 'converged' && renderconvergedContent() }  */}
     </Container>
   )
 }

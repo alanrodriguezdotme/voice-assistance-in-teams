@@ -5,7 +5,7 @@ import { GlobalContext } from '../../../contexts/GlobalContext'
 import { LuisContext } from '../../../contexts/LuisContext'
 import { SpeechToTextContext } from '../../../contexts/SpeechToTextContext'
 
-const Disambig = ({ peopleData, firstName }) => {
+const TeamsDisambig = ({ peopleData, firstName }) => {
   let { setChatData, chatData, setShowDisambig } = useContext(GlobalContext)
   let { askForMessage } = useContext(LuisContext)
   let { recognizerStop } = useContext(SpeechToTextContext)
@@ -48,7 +48,7 @@ const Disambig = ({ peopleData, firstName }) => {
   )
 }
 
-export default Disambig
+export default TeamsDisambig
 
 const Container = styled.div`
   background: #eaeaea;

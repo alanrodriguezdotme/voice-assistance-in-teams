@@ -1,5 +1,4 @@
 import React, { useContext, createContext, useEffect } from 'react'
-import Speech from 'speak-tts'
 import * as _ from 'underscore'
 
 import { GlobalContext } from '../contexts/GlobalContext'
@@ -8,7 +7,6 @@ import UsersData from './UsersData'
 
 export const LuisContext = createContext()
 
-const speech = new Speech()
 let newChatData = null
 
 const LuisContextProvider = (props) => {
@@ -210,7 +208,7 @@ const LuisContextProvider = (props) => {
 									if (shouldDisambig) {
 										if (!newChatData.lastName) {
 											if (selectedModel === 'distracted') {
-												askForMessage('Jamil')
+												disambig()
 												break
 											}
 											

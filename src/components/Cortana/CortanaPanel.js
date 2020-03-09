@@ -58,7 +58,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
       if (selectedModel === 'distracted') {
 
         if (luisResponse) { setShowFullPanel(true) } 
-        else { setShowFullPanel(false) }
+        else { setShowFullPanel(true) }
 
       } else {
         setShowFullPanel(false)

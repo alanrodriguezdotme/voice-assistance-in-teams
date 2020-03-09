@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import classNames from 'classnames'
 
-const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image="profilePic3.png" }) => {
+const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image }) => {
 	let cortanaOuter = classNames('cortanaLogo-outerRing cortanaLogo-outerRing--calm', {
 		'cortanaLogo-outerRing--listening': state == 'listening',
 		'cortanaLogo-outerRing--thinking': state == 'thinking',

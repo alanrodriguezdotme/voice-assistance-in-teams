@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { GlobalContext } from '../../../contexts/GlobalContext'
 import Chat from './Chat'
-import Disambig from './Disambig'
+import TeamsDisambig from './TeamsDisambig'
 import { LuisContext } from '../../../contexts/LuisContext'
 import { SpeechToTextContext } from '../../../contexts/SpeechToTextContext'
 
