@@ -11,7 +11,7 @@ const TeamsHome = ({ selectedModel, showCortanaPanel, actions }) => {
 
   function handleClick() {
     if (selectedModel === 'converged' && showCortanaPanel) {
-      resetCortana()
+      resetCortana(true)
       recognizerStop()
     }
   }

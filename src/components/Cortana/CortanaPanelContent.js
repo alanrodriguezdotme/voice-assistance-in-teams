@@ -18,7 +18,9 @@ const CortanaPanelContent = ({ showFullPanel, selectedModel, chatData, cortanaTe
         <CortanaAvatar
           image={ chatData.photo }
           size={ 'large' }
-          state={ 'calm' } />
+          state={ 'calm' }
+          chatData={ chatData }
+          selectedModel={ selectedModel } />
         <Title className="fullPanel">
           { cortanaText.title }
         </Title>

@@ -9,11 +9,46 @@ import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
 import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 import Instructions from './Instructions/Instructions'
+import { LuisContext } from '../contexts/LuisContext'
 
 const Home = ({ os, tts }) => {
-  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, showCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData, showInstructions } = useContext(GlobalContext)
-  let { recognizerStop } = useContext(SpeechToTextContext)
+  let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, setSelectedModel, showCortanaPanel, setShowCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData, showInstructions, userGeneratedInvocation, voiceInvocation, showCortana } = useContext(GlobalContext)
+  let { handleMicClick, recognizerStop, resumeAudioContext } = useContext(SpeechToTextContext)
+  let { getLuisResponse } = useContext(LuisContext)
   let [ showPermission, setShowPermission ] = useState(true)
+  let [ userClicked, setUserClicked ] = useState(false)
+
+  useEffect(() => {
+    if (annyang) {
+      // Define invocation commands
+      var commands = {
+        'hey cortana': () => {
+          showCortana(true, userGeneratedInvocation, { handleMicClick, getLuisResponse })
+        },
+        'cortana': () => {
+          showCortana(true, userGeneratedInvocation, { handleMicClick, getLuisResponse })
+        },
+        'marco': () => {
+          console.log('Polo!')
+        }
+      }
+      annyang.addCommands(commands);
+
+      if (voiceInvocation) {
+        console.log('starting annyang...')
+        annyang.start()
+      } else {
+        console.log('aborting annyang...')
+        annyang.abort()
+      }
+    }
+
+  }, [voiceInvocation])
+
+  // after user clicks anywhere, resume audio context so earcons will play
+  useEffect(() => {
+    userClicked && resumeAudioContext()
+  }, [ userClicked ])
 
   function getMedia(constraints) {
     navigator.mediaDevices.getUserMedia(constraints)
@@ -70,6 +105,7 @@ const Home = ({ os, tts }) => {
 
   return (
     <Container
+      onClick={ () => !userClicked && setUserClicked(true)}
       selectedModel={ selectedModel }>
       {
         os === 'iOS' &&

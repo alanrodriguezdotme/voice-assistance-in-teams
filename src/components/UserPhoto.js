@@ -46,6 +46,8 @@ const Container = styled.div`
   background-image: ${ p => p.photo ? 'url("assets/' + p.photo + '")' : null };
   background-size: cover;
   background-position: center center;
+  position: ${ p => p.size >= 100 ? 'absolute' : 'relative' };
+  z-index: ${ p => p.size >= 100 ? '9000' : 'initial' };
 `
 
 const Initials = styled.div`

@@ -11,6 +11,7 @@
   "author": "Alan Rodriguez",
   "license": "ISC",
   "dependencies": {
+    "annyang": "^2.6.1",
     "classnames": "^2.2.6",
     "date-fns": "^2.9.0",
     "microsoft-speech-browser-sdk": "0.0.12",

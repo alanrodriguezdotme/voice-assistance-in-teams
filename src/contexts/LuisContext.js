@@ -21,16 +21,6 @@ const LuisContextProvider = (props) => {
 		newChatData = null
 	}
 
-	const finishFlow = () => {
-		var audio = new Audio('assets/earcons/earconSuccess.wav');
-		setTimeout(() => {
-			audio.play();
-			setTimeout(() => {
-				resetLuis()
-			}, 2000)
-		}, 1500)
-	}
-
 	const getName = (string) => {
 		var splitString = string.toLowerCase().split(' ')
 		for (var i = 0; i < splitString.length; i++) {
@@ -40,7 +30,7 @@ const LuisContextProvider = (props) => {
 		let lastName = splitString[1]
 
 		if (!lastName) {
-			lastName = shouldDisambig ? null : 'Jamil' 
+			lastName = shouldDisambig ? null : 'Jamil'
 		}
 
 		console.log('getName: ', firstName, lastName)
@@ -48,7 +38,7 @@ const LuisContextProvider = (props) => {
 		return { firstName, lastName }
 	}
 
-	const sendMessage = () => {		
+	const sendMessage = () => {
 		setCortanaText({ title: 'Sending...' })
 
 		setTimeout(() => {
@@ -56,12 +46,12 @@ const LuisContextProvider = (props) => {
 			setCortanaText({ title: "I've sent this." })
 			if (playTts) {
 				tts.speak("Sent", () => {
-					resetCortana()
+					resetCortana(true)
 					recognizerStop()
 				})
 			} else {
 				setTimeout(() => {
-					resetCortana()
+					resetCortana(true)
 					recognizerStop()
 				}, 2000)
 			}
@@ -85,16 +75,16 @@ const LuisContextProvider = (props) => {
 		setShowDisambig(false)
 
 		if (!newChatData.message) { askForMessage() }
-		else { confirmSend() }
+		else { confirmSend(selectedModel) }
 	}
 
-	const askForMessage = (name) => {		
+	const askForMessage = (name) => {
 		setCortanaText({
 			title: "What's your message?",
 			subtitle: null
 		})
 
-		if (name) { 
+		if (name) {
 			newChatData.lastName = name
 			setChatData({ ...newChatData })
 		}
@@ -108,16 +98,23 @@ const LuisContextProvider = (props) => {
 		}
 	}
 
-	const confirmSend = () => {		
-		setCortanaText({ 
-			title: "Do you want to send it?", 
-			subtitle: chatData.message 
+	const confirmSend = (model) => {
+		console.log('confirmSend: ', selectedModel, model)
+		setCortanaText({
+			title: 'Do you want to send it?',
+			subtitle: newChatData.message
 		})
-		
+
 		if (playTts) {
-			tts.speak("Do you want to send it?", () => {
-				handleMicClick({ getLuisResponse, chatData: newChatData }, false)
-			})
+			if (model === 'distracted') {
+				tts.speak('Ok, sending a message to ' + newChatData.firstName + ' ' + newChatData.lastName + ' that says ' + newChatData.message + '. Send it?', () => {
+					handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+				})
+			} else {
+				tts.speak("Do you want to send it?", () => {
+					handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+				})
+			}
 		} else {
 			handleMicClick({ getLuisResponse, chatData: newChatData }, false)
 		}
@@ -129,7 +126,7 @@ const LuisContextProvider = (props) => {
 			title: "Which " + newChatData.firstName,
 			subtitle: chatData.message
 		})
-		
+
 		if (playTts) {
 			tts.speak("Which " + newChatData.firstName, () => {
 				handleMicClick({ getLuisResponse, chatData: newChatData }, false)
@@ -142,7 +139,11 @@ const LuisContextProvider = (props) => {
 	const getLuisResponse = (utterance, actions) => {
 		// Alan's LUIS account
 		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
-		let scrubbedUtterance = utterance[0] == '"' ? utterance.substring(1, utterance.length - 1).toLowerCase() : utterance.toLowerCase() // remove quotes from utterance
+		
+		// remove quotes from utterance
+		let scrubbedUtterance = utterance[0] == '"' ? 
+			utterance.substring(1, utterance.length - 1).toLowerCase() : 
+			utterance.toLowerCase() 
 
 		return new Promise((resolve, reject) => {
 			fetch(LUIS_URL + scrubbedUtterance)
@@ -177,6 +178,8 @@ const LuisContextProvider = (props) => {
 								message = messageObject.entity
 								newChatData.message = message
 							}
+
+							console.log('newChatData:', newChatData)
 						}
 
 						//check and see if we confidently know the intent, otherwise it is freeform text.
@@ -206,12 +209,14 @@ const LuisContextProvider = (props) => {
 									setChatData(newChatData)
 
 									if (shouldDisambig) {
+
+										// get last name
 										if (!newChatData.lastName) {
 											if (selectedModel === 'distracted') {
 												disambig()
 												break
 											}
-											
+
 											if (selectedModel === 'converged') {
 												setShowTeamsChat(true)
 												disambig()
@@ -219,15 +224,18 @@ const LuisContextProvider = (props) => {
 											}
 											// disambig()
 											break
-										
+
 										// if lastName exists
 										} else {
-											if (!newChatData.message && selectedModel != 'full attention') { 
+											if (!newChatData.message && selectedModel != 'full attention') {
 												askForMessage()
 											}
-											else { 
+											else {
 												if (selectedModel != 'full attention') {
-													confirmSend() 
+													confirmSend(actions.model)
+												} else {
+													setChatData(newChatData)
+													confirmSend(actions.model)
 												}
 											}
 										}

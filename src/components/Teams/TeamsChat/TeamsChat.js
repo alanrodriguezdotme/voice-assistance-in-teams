@@ -128,7 +128,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
           onChange={ (event) => setRecipientsValue(event.target.value)} />
       </Recipients>
       { showDisambig ? 
-        <Disambig
+        <TeamsDisambig
           firstName={ chatData.firstName }
           peopleData={ peopleData }
           chatData={ chatData } />

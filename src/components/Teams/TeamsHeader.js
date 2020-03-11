@@ -9,15 +9,13 @@ import { GlobalContext } from '../../contexts/GlobalContext'
 
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
-  const { setShowCortanaPanel, setShowSettings } = useContext(GlobalContext)
+  const { setShowCortanaPanel, setShowSettings, showCortana, userGeneratedInvocation } = useContext(GlobalContext)
   const { handleMicClick } = useContext(SpeechToTextContext)
   // const { sttStart } = useContext(BrowserSTTContext)
   const { getLuisResponse } = useContext(LuisContext)
 
-  const handleMicrophoneClick = () => {
-    handleMicClick({ getLuisResponse })
-    // sttStart()
-    setShowCortanaPanel(true)
+  const handleMicrophoneClick = () => {    
+    showCortana(false, userGeneratedInvocation, { handleMicClick, getLuisResponse })
   }
 
   function handleFilterClick() {

@@ -1,8 +1,9 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 import classNames from 'classnames'
+import UserPhoto from '../UserPhoto'
 
-const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', image }) => {
+const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#6264A7', size='large', selectedModel, chatData }) => {
 	let cortanaOuter = classNames('cortanaLogo-outerRing cortanaLogo-outerRing--calm', {
 		'cortanaLogo-outerRing--listening': state == 'listening',
 		'cortanaLogo-outerRing--thinking': state == 'thinking',
@@ -15,23 +16,22 @@ const CortanaAvatar = ({ state = 'calm', outerColor = '#B0B1D3', innerColor = '#
 		'cortanaLogo-innerRing--speaking': state == 'speaking',
 	})
 
-	function renderImage() {
-		if (image) {
-			return (
-				<Image image={ image } />
-			)
-		}
-	}
-
 	return (
 		<Container
 			className={size}
 			outerColor={outerColor}
 			innerColor={innerColor}
 			size={size}>
-			{ image && renderImage() }
 			<div className={cortanaOuter}></div>
 			<div className={cortanaInner}></div>
+			{ 
+				selectedModel === 'distracted' && chatData.firstName && chatData.lastName && 
+				<UserPhoto 
+					size={ 130 } 
+					photo={ chatData && chatData.photo }
+					firstName={ chatData.firstName }
+					lastName={ chatData.lastName} /> 
+			}
 		</Container>
 	)
 }

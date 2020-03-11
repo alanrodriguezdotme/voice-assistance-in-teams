@@ -35,7 +35,7 @@ const GlobalContextProvider = (props) => {
 	let [ orientation, setOrientation ] = useState(null)
 	let [ peopleData, setPeopleData ] = useState(UsersData)
 	let [ playTts, setPlayTts ] = useState(true)
-	let [ selectedModel, setSelectedModel ] = useState('converged')
+	let [ selectedModel, setSelectedModel ] = useState('distracted')
 	let [ shouldDisambig, setShouldDisambig ] = useState(true)
 	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
 	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)
@@ -47,7 +47,9 @@ const GlobalContextProvider = (props) => {
 	let [ showTeamsChat, setShowTeamsChat ] = useState(false)
 	let [ showUtterance, setShowUtterance ] = useState(false)
 	let [ sttState, setSttState ] = useState(null)
+	let [ userGeneratedInvocation, setUserGeneratedInvocation ] = useState(true)
 	let [ utterance, setUtterance ] = useState(null)
+	let [ voiceInvocation, setVoiceInvocation ] = useState(true)
 
 	const resetCortana = (resetChatMessages) => {
 		setSttState(null)
@@ -78,19 +80,33 @@ const GlobalContextProvider = (props) => {
 	}
 
 	function appendMessageToChatData(message, data, actions) {
-		console.log(data)
-		setChatData({ ...data, message })
-		setCortanaText({ 
-			title: 'Do you want to send it?', 
-			subtitle: message 
-		})		
-
-		if (playTts) {
-			tts.speak("Do you want to send it?", () => {
-				actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+		console.log('appendMessageToChatData: ', message, data, actions)
+		if (message && data.lastName) {
+			setChatData({ ...data, message })
+			setCortanaText({ 
+				title: 'Do you want to send it?', 
+				subtitle: message 
 			})
-		} else {
-			actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+	
+			if (playTts) {
+				if (actions.model === 'distracted') {
+					tts.speak('Ok, sending a message to ' + data.firstName + ' ' + data.lastName + ' that says ' + message + '. Send it?', () => {
+						actions.handleMicClick({ 
+							getLuisResponse: actions.getLuisResponse, 
+							chatData: { ...data, message } 
+						}, false)
+					})
+				} else {
+					tts.speak("Do you want to send it?", () => {
+						actions.handleMicClick({ 
+							getLuisResponse, 
+							chatData: newChatData 
+						}, false)
+					})
+				}
+			} else {
+				actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+			}
 		}
 	}
 
@@ -110,6 +126,22 @@ const GlobalContextProvider = (props) => {
 			}
 		}, false);
 	}
+
+  const showCortana = (invoked, allowModelChange, actions) => {
+		let model = selectedModel
+    if (invoked && allowModelChange) {
+			model = 'distracted'
+      setSelectedModel('distracted')
+    } else if (!invoked && allowModelChange) {
+			model = 'converged'
+      setSelectedModel('converged')
+    }
+
+    actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, model })
+		setShowCortanaPanel(true)
+		
+		console.log('showCortana:', invoked, allowModelChange, selectedModel)
+  }
 
 	useEffect(() => {
 		if (window.DeviceOrientationEvent) {
@@ -153,18 +185,21 @@ const GlobalContextProvider = (props) => {
 			chatData, setChatData,
 			showSettings, setShowSettings,
 			fullAttentionMode, setFullAttentionMode,
-			selectedModel, setSelectedModel,
-			playTts, setPlayTts,
-			shouldSendMessage, setShouldSendMessage,
-			shouldDisambig, setShouldDisambig,
-			showDisambig, setShowDisambig,
 			peopleData, setPeopleData,
+			playTts, setPlayTts,
+			selectedModel, setSelectedModel,
 			showInstructions, setShowInstructions,
+			shouldDisambig, setShouldDisambig,
+			shouldSendMessage, setShouldSendMessage,
+			showDisambig, setShowDisambig,
+			userGeneratedInvocation, setUserGeneratedInvocation,
+			voiceInvocation, setVoiceInvocation,
 			isMicOn,
 			resetCortana,
 			orientation,
 			initSensor,
-			appendMessageToChatData
+			appendMessageToChatData,
+			showCortana
 		}}>
 			{props.children}
 		</GlobalContext.Provider>

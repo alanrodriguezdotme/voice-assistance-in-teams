@@ -98,7 +98,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
     recognizerStop()
     // sttStop()
     // stopListening()
-    resetCortana()
+    resetCortana(true)
   }
 
   function renderCortini() {

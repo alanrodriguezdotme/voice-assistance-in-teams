@@ -8,6 +8,9 @@ let serviceRegion = 'westus'
 let recognizer
 let skipLuis = false
 
+// set up AudioContext now, to detect if suspended (Chrome doesn't let you play audio unless there is a user gesture first (i.e., click))
+let audio = new AudioContext()
+
 export const SpeechToTextContext = createContext()
 
 const SpeechToTextContextProvider = (props) => {
@@ -21,6 +24,11 @@ const SpeechToTextContextProvider = (props) => {
 			'Detailed',
 			subscriptionKey
 		)
+	}
+
+	const resumeAudioContext = () => {
+		audio.resume()
+		console.log('user clicked, audio resumed')
 	}
 
 	const recognizerSetup = (SDK, recognitionMode, language, format, subscriptionKey) => {
@@ -40,8 +48,10 @@ const SpeechToTextContextProvider = (props) => {
 	}
 
 	const playEarcon = (state) => {
-		let audio = new Audio('assets/earcons/earcon-' + state + '.wav')
-		audio.play()
+		if (audio.state != 'suspended') {
+			let audio = new Audio('assets/earcons/earcon-' + state + '.wav')
+			audio.play()
+		}
 	}
 
 	const handleMicClick = (actions, shouldSkipLuis) => {
@@ -99,9 +109,9 @@ const SpeechToTextContextProvider = (props) => {
 						console.log(event.Result.NBest[0].ITN)
 						setCortanaText({ title: '' })
 						if (!skipLuis) {
-							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop })
+							actions.getLuisResponse(JSON.stringify(event.Result.NBest[0].ITN), { initStt, recognizerStop, model: actions.model })
 						} else {
-							appendMessageToChatData(event.Result.NBest[0].ITN, actions.chatData, { handleMicClick, getLuisResponse: actions.getLuisResponse })
+							appendMessageToChatData(event.Result.NBest[0].ITN, actions.chatData, { handleMicClick, getLuisResponse: actions.getLuisResponse, model: actions.model })
 						}
 					} else {
 						setAvatarState('calm')
@@ -139,7 +149,7 @@ const SpeechToTextContextProvider = (props) => {
 	}
 
 	return (
-		<SpeechToTextContext.Provider value={{ initStt, handleMicClick, recognizerStop, recognizerSetup }}>
+		<SpeechToTextContext.Provider value={{ initStt, handleMicClick, recognizerStop, recognizerSetup, resumeAudioContext }}>
 			{ props.children }
 		</SpeechToTextContext.Provider>
 	)

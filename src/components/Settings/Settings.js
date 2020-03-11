@@ -8,7 +8,7 @@ import "react-toggle/style.css"
 import { GlobalContext } from '../../contexts/GlobalContext'
 
 const Settings = ({ showSettings }) => {
-  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, playTts, setPlayTts, shouldDisambig, setShouldDisambig, showInstructions, setShowInstructions } = useContext(GlobalContext)
+  let { setShowSettings, orientation, selectedModel, setSelectedModel, resetCortana, playTts, setPlayTts, shouldDisambig, setShouldDisambig, showInstructions, setShowInstructions, userGeneratedInvocation, setUserGeneratedInvocation, voiceInvocation, setVoiceInvocation } = useContext(GlobalContext)
   let [ showContainer, setShowContainer ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   let [ showOverlay, setShowOverlay ] = useState(false)
@@ -33,9 +33,11 @@ const Settings = ({ showSettings }) => {
   }, [showSettings])
 
   function handleModelChange(option) {
-    console.log(option.value)
-    setSelectedModel(option.value)
-    resetCortana()
+    if (option.value != selectedModel) {
+      setSelectedModel(option.value)
+      resetCortana(true)
+      setUserGeneratedInvocation(false)
+    }
   }
 
   function handleTtsChange(event) {
@@ -44,6 +46,14 @@ const Settings = ({ showSettings }) => {
 
   function handleDisambigChange(event) {
     setShouldDisambig(event.target.checked)
+  }
+
+  function handleUserInvocation(event) {
+    setUserGeneratedInvocation(event.target.checked)
+    if (event.target.checked) {
+      setVoiceInvocation(true)
+      setPlayTts(true)
+    }
   }
 
   return (
@@ -65,6 +75,15 @@ const Settings = ({ showSettings }) => {
           </Control>
           <Control>
             <Label>
+              Model based on user action
+              <div className="caption">(voice uses distracted, tap/click uses converged)</div>
+            </Label>
+            <Toggle
+              checked={ userGeneratedInvocation }
+              onChange={ (event) => handleUserInvocation(event) } />
+          </Control>
+          <Control>
+            <Label>
               TTS
               <div className="caption">(converged and distracted)</div>
             </Label>
@@ -80,6 +99,14 @@ const Settings = ({ showSettings }) => {
             <Toggle
               checked={ shouldDisambig }
               onChange={ (event) => handleDisambigChange(event) } />
+          </Control>
+          <Control>
+            <Label>
+              Voice invocation
+            </Label>
+            <Toggle
+              checked={ voiceInvocation }
+              onChange={ (event) => setVoiceInvocation(event.target.checked) } />
           </Control>
           <Control>
             <Label>

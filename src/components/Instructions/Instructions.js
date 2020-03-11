@@ -52,7 +52,7 @@ const Instructions = () => {
             checked={ shouldShow }
             onChange={ (event) => handleShowInstructionsToggle(event) } />
           <Label>
-            Show instructions 
+            Show instructions next time
           </Label>
         </Control>
         <Control>
