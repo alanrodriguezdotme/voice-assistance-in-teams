@@ -9,7 +9,7 @@ let input = `
   # Cortana Convergence Prototype
   ---
   ## Instructions
-  Tap on the microphone icon (<i class="icon-teams icon-teams-Microphone" />) next to the search box to invoke Cortana. You can say the following:
+  Tap on the microphone icon (<i class="icon-teams icon-teams-Microphone" />) next to the search box to invoke Cortana. You can also say "Hey Cortana". Then, you can say the following:
 
   ### "Send a message to (first name)"
   This will bring up the disambiguation flow.
