@@ -35,7 +35,7 @@ const GlobalContextProvider = (props) => {
 	let [ orientation, setOrientation ] = useState(null)
 	let [ peopleData, setPeopleData ] = useState(UsersData)
 	let [ playTts, setPlayTts ] = useState(true)
-	let [ selectedModel, setSelectedModel ] = useState('distracted')
+	let [ selectedModel, setSelectedModel ] = useState('converged')
 	let [ shouldDisambig, setShouldDisambig ] = useState(true)
 	let [ shouldSendMessage, setShouldSendMessage ] = useState(false)
 	let [ showCortanaPanel, setShowCortanaPanel ] = useState(false)

@@ -66,13 +66,13 @@ const Settings = ({ showSettings }) => {
           </CloseButton>
         </Header>
         <Controls>
-          <Control>
+          {/* <Control>
             <Label>Select a model</Label>
             <Dropdown
               options={ modelOptions }
               onChange={ (option) => handleModelChange(option) }
               value={ selectedModel } />
-          </Control>
+          </Control> */}
           <Control>
             <Label>
               Model based on user action
