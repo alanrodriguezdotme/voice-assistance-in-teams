@@ -6,7 +6,7 @@ import { GlobalContext } from '../../../contexts/GlobalContext'
 import Chat from './Chat'
 import TeamsDisambig from './TeamsDisambig'
 import { LuisContext } from '../../../contexts/LuisContext'
-import { SpeechToTextContext } from '../../../contexts/SpeechToTextContext'
+import { STTContext } from '../../../contexts/STTContext'
 
 const capitalizeString = (str) => {
   if (str.includes(" ' ")) {
@@ -19,7 +19,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
   let { firstName, lastName, message } = chatData
   let { chatMessages, setChatMessages, setShowTeamsChat, resetCortana, shouldDisambig, setShowDisambig } = useContext(GlobalContext)
   let { resetLuis } = useContext(LuisContext)
-  let { recognizerStop } = useContext(SpeechToTextContext)
+  let { stopListening } = useContext(STTContext)
   let [ firstNameValue, setFirstNameValue ] = useState(firstName ? firstName : '')
   let [ lastNameValue, setLastNameValue ] = useState(lastName ? lastName : '')
   let [ inputValue, setInputValue ] = useState(chatData.message ? capitalizeString(message) : '')
@@ -56,7 +56,7 @@ const TeamsChat = ({ chatData, selectedModel, shouldSendMessage, showCortanaPane
   function handleTeamsWrapperClick() {
     if (selectedModel === 'converged' && showCortanaPanel) {
       resetCortana(false)
-      recognizerStop()
+      stopListening()
     }
   }
 

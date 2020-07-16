@@ -2,16 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { GlobalContext } from '../contexts/GlobalContext'
-import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 import Home from './Home'
 
 const Wrapper = ({ tts }) => {
-	let { initStt } = useContext(SpeechToTextContext)
 	let { orientation } = useContext(GlobalContext)
-	
-	useEffect(() => {
-		initStt()
-	}, [])
 
 	function getMobileOperatingSystem() {
 		var userAgent = navigator.userAgent || navigator.vendor || window.opera;

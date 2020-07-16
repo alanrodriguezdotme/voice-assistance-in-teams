@@ -2,9 +2,9 @@ import React from 'react'
 
 import GlobalContextProvider from './contexts/GlobalContext'
 import Wrapper from './components/Wrapper'
-import SpeechToTextContextProvider from './contexts/SpeechToTextContext'
 import LuisContextProvider from './contexts/LuisContext'
 import TextToSpeech from './contexts/TextToSpeech'
+import STTContextProvider from './contexts/STTContext'
 // import BrowserSTTContextProvider from './contexts/BrowserSTTContext'
 
 const App = () => {	
@@ -12,13 +12,11 @@ const App = () => {
 	
 	return (
 		<GlobalContextProvider>
-			<SpeechToTextContextProvider>
-				{/* <BrowserSTTContextProvider> */}
+			<STTContextProvider>
 				<LuisContextProvider tts={ tts }>
 					<Wrapper tts={ tts } />
 				</LuisContextProvider>
-				{/* </BrowserSTTContextProvider> */}
-			</SpeechToTextContextProvider>
+			</STTContextProvider>
 		</GlobalContextProvider>
 	);
 }

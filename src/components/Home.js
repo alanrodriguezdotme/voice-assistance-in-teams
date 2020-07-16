@@ -7,13 +7,13 @@ import CortanaPanel from './Cortana/CortanaPanel'
 import { GlobalContext } from '../contexts/GlobalContext'
 import TeamsChat from './Teams/TeamsChat/TeamsChat'
 import Settings from './Settings/Settings'
-import { SpeechToTextContext } from '../contexts/SpeechToTextContext'
 import Instructions from './Instructions/Instructions'
 import { LuisContext } from '../contexts/LuisContext'
+import { STTContext } from '../contexts/STTContext'
 
 const Home = ({ os, tts }) => {
   let { showTeamsChat, luisResponse, chatData, initSensor, resetCortana, showSettings, cortanaText, selectedModel, setSelectedModel, showCortanaPanel, setShowCortanaPanel, playTts, isMicOn, shouldSendMessage, showDisambig, peopleData, showInstructions, userGeneratedInvocation, voiceInvocation, showCortana } = useContext(GlobalContext)
-  let { handleMicClick, recognizerStop, resumeAudioContext } = useContext(SpeechToTextContext)
+  let { startListening, stopListening } = useContext(STTContext)
   let { getLuisResponse } = useContext(LuisContext)
   let [ showPermission, setShowPermission ] = useState(true)
   let [ userClicked, setUserClicked ] = useState(false)
@@ -23,10 +23,10 @@ const Home = ({ os, tts }) => {
       // Define invocation commands
       var commands = {
         'hey cortana': () => {
-          showCortana(true, userGeneratedInvocation, { handleMicClick, getLuisResponse })
+          showCortana(true, userGeneratedInvocation, { startListening, getLuisResponse })
         },
         'cortana': () => {
-          showCortana(true, userGeneratedInvocation, { handleMicClick, getLuisResponse })
+          showCortana(true, userGeneratedInvocation, { startListening, getLuisResponse })
         },
         'marco': () => {
           console.log('Polo!')
@@ -46,9 +46,9 @@ const Home = ({ os, tts }) => {
   }, [voiceInvocation])
 
   // after user clicks anywhere, resume audio context so earcons will play
-  useEffect(() => {
-    userClicked && resumeAudioContext()
-  }, [ userClicked ])
+  // useEffect(() => {
+  //   userClicked && resumeAudioContext()
+  // }, [ userClicked ])
 
   function getMedia(constraints) {
     navigator.mediaDevices.getUserMedia(constraints)
@@ -125,12 +125,12 @@ const Home = ({ os, tts }) => {
             showCortanaPanel={ showCortanaPanel }
             shouldSendMessage={ shouldSendMessage }
             showDisambig={ showDisambig }
-            actions={{ resetCortana, recognizerStop }}
+            actions={{ resetCortana, stopListening }}
             chatData={ chatData }
             selectedModel={ selectedModel } />
           :
           <TeamsHome
-            actions={{ resetCortana, recognizerStop }}
+            actions={{ resetCortana, stopListening }}
             selectedModel={ selectedModel }
             showCortanaPanel={ showCortanaPanel } />
         }

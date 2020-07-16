@@ -3,19 +3,19 @@ import styled from 'styled-components'
 import UserPhoto from '../UserPhoto'
 import { GlobalContext } from '../../contexts/GlobalContext'
 import { LuisContext } from '../../contexts/LuisContext'
-import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
+import { STTContext } from '../../contexts/STTContext'
 
 const CortanaPanelDisambig = ({ peopleData, firstName }) => {
   let { setChatData, chatData, setShowDisambig } = useContext(GlobalContext)
   let { askForMessage } = useContext(LuisContext)
-  let { recognizerStop } = useContext(SpeechToTextContext)
+  let { stopListening } = useContext(STTContext)
 
   function handleItemClick(person, event) {
     let data = { ...chatData }
     data.lastName = person.lastName
     data.photo = person.photo
     setChatData({ ...data })
-    recognizerStop()
+    stopListening()
     askForMessage(person.lastName)
   }
 

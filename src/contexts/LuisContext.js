@@ -2,8 +2,8 @@ import React, { useContext, createContext, useEffect } from 'react'
 import * as _ from 'underscore'
 
 import { GlobalContext } from '../contexts/GlobalContext'
-import { SpeechToTextContext } from './SpeechToTextContext'
 import UsersData from './UsersData'
+import { STTContext } from './STTContext'
 
 export const LuisContext = createContext()
 
@@ -11,13 +11,12 @@ let newChatData = null
 
 const LuisContextProvider = (props) => {
 	let { setLuisResponse, setShowTeamsChat, resetCortana, setChatData, setShouldSendMessage, setCortanaText, chatData, playTts, shouldDisambig, setShowDisambig, selectedModel } = useContext(GlobalContext)
-	let { handleMicClick, recognizerStop, initStt } = useContext(SpeechToTextContext)
+	let { startListening, stopListening, initStt } = useContext(STTContext)
 	let { tts } = props
 
 	const resetLuis = () => {
 	//completely reset the demo
-	  recognizerStop()
-		initStt()
+	  stopListening()
 		newChatData = null
 	}
 
@@ -47,12 +46,12 @@ const LuisContextProvider = (props) => {
 			if (playTts) {
 				tts.speak("Sent", () => {
 					resetCortana(true)
-					recognizerStop()
+					stopListening()
 				})
 			} else {
 				setTimeout(() => {
 					resetCortana(true)
-					recognizerStop()
+					stopListening()
 				}, 2000)
 			}
 		}, 1000)
@@ -91,10 +90,10 @@ const LuisContextProvider = (props) => {
 
 		if (playTts) {
 			tts.speak("What's your message for " + newChatData.firstName + ' ' + newChatData.lastName + '?', () => {
-				handleMicClick({ getLuisResponse, chatData: newChatData }, true)
+				startListening({ getLuisResponse, chatData: newChatData }, true)
 			})
 		} else {
-			handleMicClick({ getLuisResponse, chatData: newChatData }, true)
+			startListening({ getLuisResponse, chatData: newChatData }, true)
 		}
 	}
 
@@ -108,15 +107,15 @@ const LuisContextProvider = (props) => {
 		if (playTts) {
 			if (model === 'distracted') {
 				tts.speak('Ok, sending a message to ' + newChatData.firstName + ' ' + newChatData.lastName + ' that says ' + newChatData.message + '. Send it?', () => {
-					handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+					startListening({ getLuisResponse, chatData: newChatData }, false)
 				})
 			} else {
 				tts.speak("Do you want to send it?", () => {
-					handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+					startListening({ getLuisResponse, chatData: newChatData }, false)
 				})
 			}
 		} else {
-			handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+			startListening({ getLuisResponse, chatData: newChatData }, false)
 		}
 	}
 
@@ -129,10 +128,10 @@ const LuisContextProvider = (props) => {
 
 		if (playTts) {
 			tts.speak("Which " + newChatData.firstName, () => {
-				handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+				startListening({ getLuisResponse, chatData: newChatData }, false)
 			})
 		} else {
-			handleMicClick({ getLuisResponse, chatData: newChatData }, false)
+			startListening({ getLuisResponse, chatData: newChatData }, false)
 		}
 	}
 

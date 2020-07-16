@@ -4,11 +4,11 @@ import classNames from 'classnames'
 import SpeechRecognition from 'react-speech-recognition'
 
 import { GlobalContext } from '../../contexts/GlobalContext'
-import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
 import { LuisContext } from '../../contexts/LuisContext'
 import VoiceMeter from './VoiceMeter'
 import CortanaPanelContent from './CortanaPanelContent'
 import CortanaPanelControls from './CortanaPanelControls'
+import { STTContext } from '../../contexts/STTContext'
 
 const options = {
   autoStart: false,
@@ -18,7 +18,7 @@ const options = {
 const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, playTts, isMicOn, tts, luisResponse }) => {
   let { setShowCortanaPanel, utterance, sttState, resetCortana, setCortanaText, setShowTeamsChat, shouldDisambig, setShowDisambig, setChatData } = useContext(GlobalContext)
   let { getLuisResponse, sendMessage } = useContext(LuisContext)
-  let { recognizerStop, handleMicClick } = useContext(SpeechToTextContext)
+  let { startListening, stopListening } = useContext(STTContext)
   let [ showOverlay, setShowOverlay ] = useState(false)
   let [ showPanel, setShowPanel ] = useState(false)
   // let [ showFullPanel, setShowFullPanel ] = useState(true)
@@ -84,10 +84,10 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
             setShowTeamsChat(true)
           }
           if (!chatData.message && !playTts) {
-            handleMicClick({ getLuisResponse }, true)
+            startListening({ getLuisResponse }, true)
           } else if (chatData.message && !playTts && luisResponse && luisResponse.topScoringIntent.intent != 'confirm') {
             setCortanaText({ title: 'Do you want to send it?', subtitle: chatData.message  })
-            handleMicClick({ getLuisResponse })
+            startListening({ getLuisResponse })
           }
         }
       }
@@ -95,7 +95,7 @@ const CortanaPanel = ({ cortanaText, selectedModel, chatData, showCortanaPanel, 
   }, [luisResponse, selectedModel, chatData, showCortanaPanel])
 
   function handleOverlayClick() {
-    recognizerStop()
+    stopListening()
     // sttStop()
     // stopListening()
     resetCortana(true)

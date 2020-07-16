@@ -2,20 +2,19 @@ import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import UserPhoto from '../UserPhoto'
 
-import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
-// import { BrowserSTTContext } from '../../contexts/BrowserSTTContext'
 import { LuisContext } from '../../contexts/LuisContext'
 import { GlobalContext } from '../../contexts/GlobalContext'
+import { STTContext } from '../../contexts/STTContext'
 
 const TeamsHeader = () => {
   let [ searchValue, setSearchValue ] = useState('')
   const { setShowCortanaPanel, setShowSettings, showCortana, userGeneratedInvocation } = useContext(GlobalContext)
-  const { handleMicClick } = useContext(SpeechToTextContext)
+  let { startListening, stopListening } = useContext(STTContext)
   // const { sttStart } = useContext(BrowserSTTContext)
   const { getLuisResponse } = useContext(LuisContext)
 
   const handleMicrophoneClick = () => {    
-    showCortana(false, userGeneratedInvocation, { handleMicClick, getLuisResponse })
+    showCortana(false, userGeneratedInvocation, { startListening, getLuisResponse })
   }
 
   function handleFilterClick() {

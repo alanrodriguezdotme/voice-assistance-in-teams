@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import classNames from 'classnames'
 
 import VoiceMeter from './VoiceMeter'
-import { SpeechToTextContext } from '../../contexts/SpeechToTextContext'
+import { STTContext } from '../../contexts/STTContext'
 
 const CortanaPanelControls = ({ isMicOn, sttState, getLuisResponse, showFullPanel, selectedModel, utterance }) => {
-  let { handleMicClick } = useContext(SpeechToTextContext)
+  let { startListening, stopListening } = useContext(STTContext)
 
   let controlsClasses = classNames({
     'converged': selectedModel === 'converged',
@@ -31,7 +31,7 @@ const CortanaPanelControls = ({ isMicOn, sttState, getLuisResponse, showFullPane
         renderUtterance()
         :
         <Microphone className={ microphoneClasses }
-          onClick={ () => handleMicClick({ getLuisResponse }) }>
+          onClick={ () => startListening({ getLuisResponse }) }>
           <i className={ "icon-teams" + (showFullPanel ? "-regular " : " ") + "icon-teams-Microphone" } />
         </Microphone>
       }

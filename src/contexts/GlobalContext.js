@@ -91,21 +91,21 @@ const GlobalContextProvider = (props) => {
 			if (playTts) {
 				if (actions.model === 'distracted') {
 					tts.speak('Ok, sending a message to ' + data.firstName + ' ' + data.lastName + ' that says ' + message + '. Send it?', () => {
-						actions.handleMicClick({ 
+						actions.startListening({ 
 							getLuisResponse: actions.getLuisResponse, 
 							chatData: { ...data, message } 
 						}, false)
 					})
 				} else {
 					tts.speak("Do you want to send it?", () => {
-						actions.handleMicClick({ 
-							getLuisResponse, 
-							chatData: newChatData 
+						actions.startListening({ 
+							getLuisResponse: actions.getLuisResponse, 
+							chatData: { ...data, message } 
 						}, false)
 					})
 				}
 			} else {
-				actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
+				actions.startListening({ getLuisResponse: actions.getLuisResponse, chatData: data }, false)
 			}
 		}
 	}
@@ -137,7 +137,7 @@ const GlobalContextProvider = (props) => {
       setSelectedModel('converged')
     }
 
-    actions.handleMicClick({ getLuisResponse: actions.getLuisResponse, model })
+    actions.startListening({ getLuisResponse: actions.getLuisResponse, model })
 		setShowCortanaPanel(true)
 		
 		console.log('showCortana:', invoked, allowModelChange, selectedModel)

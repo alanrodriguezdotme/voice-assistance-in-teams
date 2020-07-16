@@ -7,12 +7,12 @@ import TeamsFeed from './TeamsFeed'
 import TeamsNav from './TeamsNav'
 
 const TeamsHome = ({ selectedModel, showCortanaPanel, actions }) => {
-  let { resetCortana, recognizerStop } = actions
+  let { resetCortana, stopListening } = actions
 
   function handleClick() {
     if (selectedModel === 'converged' && showCortanaPanel) {
       resetCortana(true)
-      recognizerStop()
+      stopListening()
     }
   }
 
