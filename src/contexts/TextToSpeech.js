@@ -6,7 +6,7 @@ let source;     // Audio buffer
 export default class TextToSpeech {
     constructor(
         accessToken,
-        baseUrl = "https://westus2.tts-frontend.speech.microsoft.com/synthesize/internal") {
+        baseUrl = "TTS_URL_HERE") {
         this.baseUrl = baseUrl;
         this.accessToken = accessToken;
     }

@@ -136,8 +136,8 @@ const LuisContextProvider = (props) => {
 	}
 
 	const getLuisResponse = (utterance, actions) => {
-		// Alan's LUIS account
-		const LUIS_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/fa57ed98-f410-4b0e-a8ab-bc34b697e199?verbose=true&timezoneOffset=0&subscription-key=7b66646eb6344aea8e22592a102bcc6d&q='
+		// LUIS endpoint goes here
+		const LUIS_URL = 'INSERT_LUIS_ENDPOINT_URL'
 		
 		// remove quotes from utterance
 		let scrubbedUtterance = utterance[0] == '"' ? 

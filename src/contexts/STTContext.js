@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react'
 import * as SpeechSDK from 'microsoft-cognitiveservices-speech-sdk'
 import { GlobalContext } from './GlobalContext'
 
-let subscriptionKey = 'ab3918c52b51410cae05d545fe5ce17f'
+let subscriptionKey = 'SUBSCRIPTION_KEY'
 let authEndpoint = 'https://westus.api.cognitive.microsoft.com/sts/v1.0/issuetoken'
 let authToken
 let serviceRegion = "westus"
